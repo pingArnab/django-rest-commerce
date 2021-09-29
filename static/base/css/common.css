@@ -1,0 +1,19 @@
+.disable-it {
+    cursor: none !important;
+    pointer-events: none !important;
+    background-color: #dedede !important;
+    box-shadow: none !important;
+    text-decoration: none !important;
+    color: white !important;
+}
+
+.loading {
+    cursor: progress;
+    pointer-events: none;
+}
+.loading span {
+    display: none;
+}
+.loading:after{
+    content: 'Loading...';
+}

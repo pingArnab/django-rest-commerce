@@ -61,7 +61,7 @@ def login(request):
                 messages.error(request, 'No seller / staff found with this email')
         except Exception as ex:
             messages.error(request, 'no Seller / Staff found with this email')
-    return render(request, 'USER/login-page.html')
+    return render(request, 'SELLER/login-page.html')
 
 
 def logout(request):

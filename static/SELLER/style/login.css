@@ -1,0 +1,75 @@
+.form-signin {
+    padding: 15px;
+    margin: 0 auto;
+    width: 450px;
+}
+.form-signin .checkbox {
+    font-weight: 400;
+}
+.form-signin .form-control {
+    height: 60px;
+    padding: 10px;
+    font-size: 16px;
+    margin-bottom: 20px;
+    border: 1px solid #dedede;
+}
+.form-signin .form-control:focus {
+    z-index: 2;
+}
+
+.form-signin p {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.mt-5, .my-5 {
+    margin-top: 1rem!important;
+}
+
+.head-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-top: 85px;
+    margin-bottom: 50px;
+}
+
+
+
+@media screen and (max-width: 800px) {
+
+    .form-signin {
+        width: 80vw;
+        padding: 15px;
+        margin: auto;
+        text-align: center;
+    }
+    .form-signin .checkbox {
+        font-weight: 400;
+    }
+    .form-signin .form-control {
+        height: 60px;
+        padding: 10px;
+        font-size: 16px;
+        margin-bottom: 20px;
+        border: 1px solid var(--primary-grey);
+    }
+    .form-signin .form-control:focus {
+        z-index: 2;
+    }
+
+    .form-signin p {
+        text-align: center;
+        margin-top: 10px;
+    }
+
+    .mt-5, .my-5 {
+        margin-top: 1rem!important;
+    }
+
+    .head-block {
+        padding-top: 40px;
+        margin-bottom: 20px;
+    }
+}

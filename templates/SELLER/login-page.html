@@ -1,0 +1,48 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block head_content %}
+    <link rel="stylesheet" href="{% static 'SELLER/style/login.css' %}">
+
+    <style>
+        .head-block {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding-top: 85px;
+            margin-bottom: 50px;
+        }
+
+        .step-heading {
+            font-family: sans-serif;
+            font-weight: bold;
+            color: #181818;
+            margin-top: 90px;
+        }
+
+        @media screen and (max-width: 800px) {
+
+            .head-block {
+                padding-top: 40px;
+                margin-bottom: 20px;
+            }
+
+            .step-heading {
+                margin-top: 40px;
+                text-align: center;
+            }
+        }
+    </style>
+
+{% endblock head_content %}
+
+{% block body_content %}
+
+    <div class="head-block">
+        <h1 class="step-heading">DRC Portal - Seller / Staff </h1>
+        <h4>Sign In</h4>
+    </div>
+
+    {% include 'SELLER/includes/login-form.html' %}
+    
+{% endblock body_content %}

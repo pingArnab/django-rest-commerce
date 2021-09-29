@@ -1,0 +1,51 @@
+{% load base_tag %}
+{% load static %}
+
+<link rel="stylesheet" href="{% static '/base/css/animation.css' %}">
+
+<style>
+    .toast-container {
+        position: fixed;
+        right: 2%;
+        width: 250px
+    }
+
+    @media screen and (min-width: 800px) {
+        .toast-container {
+            top: 10%;
+        }
+    }
+
+    @media screen and (max-width: 800px) {
+        .toast-container {
+            bottom: 12vh;
+            width: 80vw;
+            margin: auto;
+            right: 0;
+            left: 0;
+        }
+    }
+</style>
+
+<div class="toast-container slide-in-blurred-right">
+    <div id="toast-area" aria-live="polite" aria-atomic="true" style="position: relative;">
+        {% for message in messages %}
+            <div class="toast bg-{{ message.tags | b4_class }}" data-autohide="false">
+                <div class="toast-header">
+
+{#                    <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>#}
+                    <strong class="mr-auto text-{{ message.tags | b4_class }}">{{ message.tags | capfirst }}: </strong>
+                    <button type="button" class="ml-2 mb-1 close" data-dismiss="toast">&times;</button>
+                </div>
+                <div class="toast-body text-light">
+                    {{ message }}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+<script>
+    $(document).ready(function(){
+        $('.toast').toast('show');
+    });
+</script>

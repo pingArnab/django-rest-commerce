@@ -42,7 +42,7 @@ if ENV_TYPE.upper() == 'TEST':
     DEBUG_FLAG = False if (os.environ.get('DJANGO_DEBUG_MODE').upper() == 'FALSE') else True
     DBConfig = {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db1.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 else:
     DEBUG_FLAG = True if (os.environ.get('DJANGO_DEBUG_MODE').upper() == 'TRUE') else False
@@ -162,6 +162,7 @@ TEMPLATES = [
             ],
             'builtins': [
                 'SELLER.templatetags.custom_tag',
+                'HOME.templatetags.base_tag',
             ],
         },
     },
@@ -171,6 +172,10 @@ WSGI_APPLICATION = 'DRC.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 LOCAL = False
+
+DATABASES = {
+    'default': DBConfig
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
