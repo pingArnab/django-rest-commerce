@@ -1,0 +1,24 @@
+NAME: "django_rest_commerce"
+
+MAIL:
+  NAME: '[email_name]'
+  ADDRESS: '[email_address]'
+  HOST: '[email_host]'
+  USE_TLS: True
+  PORT: 587
+  REPLY_TO:
+    - support@domain.com
+
+DB:
+  ENGINE: django.db.backends.postgresql_psycopg2
+  NAME: ctmela_prod1
+  HOST: localhost
+  PORT: 5432
+
+ALLOWED_HOST:
+  - 127.0.0.1
+  - localhost
+
+CORS_ALLOWED_ORIGIN:
+  - http://127.0.0.1:3000
+  - http://localhost:3000

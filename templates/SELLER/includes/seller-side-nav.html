@@ -1,0 +1,70 @@
+
+<!-- Side Navigation section start -->
+<div id="layoutSidenav_nav">
+    <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+        <div class="sb-sidenav-menu">
+            <div class="nav">
+                <div class="sb-sidenav-menu-heading">Core</div>
+                <a class="nav-link" href="{% url 'SELLER:dashboard' %}">
+                    <div class="sb-nav-link-icon"><i data-feather="sliders"></i></div>
+                    Dashboard
+                </a>
+                <div class="sb-sidenav-menu-heading">Interface</div>
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
+                    <div class="sb-nav-link-icon"><i data-feather="package"></i></div>
+                    Products
+                    <div class="sb-sidenav-collapse-arrow"><i data-feather="chevron-down"></i></div>
+                </a>
+                <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-parent="#sidenavAccordion">
+                    <nav class="sb-sidenav-menu-nested nav">
+                        <a class="nav-link" href="{% url 'SELLER:all-products' %}">All Products</a>
+                        <a class="nav-link" href="{% url 'SELLER:add-product' %}">Add new products</a>
+                    </nav>
+                </div>
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
+                    <div class="sb-nav-link-icon"><i data-feather="list"></i></div>
+                    Manage Orders
+                    <div class="sb-sidenav-collapse-arrow"><i data-feather="chevron-down"></i></div>
+                </a>
+                <div class="collapse" id="collapsePages" aria-labelledby="headingTwo" data-parent="#sidenavAccordion">
+                    <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
+                        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#pagesCollapseAuth" aria-expanded="false" aria-controls="pagesCollapseAuth">
+                            All Orders
+                            <div class="sb-sidenav-collapse-arrow"><i data-feather="chevron-down"></i></div>
+                        </a>
+                        <div class="collapse" id="pagesCollapseAuth" aria-labelledby="headingOne" data-parent="#sidenavAccordionPages">
+                            <nav class="sb-sidenav-menu-nested nav">
+                                <a class="nav-link" href="{% url 'SELLER:orders' 'new' %}">New Order</a>
+                                <a class="nav-link" href="{% url 'SELLER:orders' 'ongoing' %}">Ongoing Order</a>
+                                <a class="nav-link" href="{% url 'SELLER:orders' 'delivered' %}">Delivered Order</a>
+                            </nav>
+                        </div>
+                        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#pagesCollapseError" aria-expanded="false" aria-controls="pagesCollapseError">
+                            Notifications
+                            <div class="sb-sidenav-collapse-arrow"><i data-feather="chevron-down"></i></div>
+                        </a>
+                        <div class="collapse" id="pagesCollapseError" aria-labelledby="headingOne" data-parent="#sidenavAccordionPages">
+                            <nav class="sb-sidenav-menu-nested nav">
+                                <a class="nav-link" href="#">Messages</a>
+                            </nav>
+                        </div>
+                    </nav>
+                </div>
+{#                <div class="sb-sidenav-menu-heading">Addons</div>#}
+{#                <a class="nav-link" href="charts.html">#}
+{#                    <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>#}
+{#                    Charts#}
+{#                </a>#}
+{#                <a class="nav-link" href="tables.html">#}
+{#                    <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>#}
+{#                    Tables#}
+{#                </a>#}
+            </div>
+        </div>
+        <div class="sb-sidenav-footer">
+            <div class="small">Logged in as:</div>
+            {{ user.get_full_name }}
+        </div>
+    </nav>
+</div>
+<!-- Side Navigation section end -->

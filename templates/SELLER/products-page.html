@@ -1,0 +1,90 @@
+{% extends 'SELLER/base.html' %}
+{% load static %}
+
+{% block nav_content %}
+    {% include 'SELLER/includes/seller-nav.html' %}
+{%  endblock nav_content %}
+
+
+{% block body_content %}
+    {% include 'SELLER/includes/seller-side-nav.html' %}
+
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="container-fluid">
+                {#                <h1 class="mt-4">Seller Dashboard</h1>#}
+                <hr>
+                <ol class="breadcrumb mb-4">
+                    <li class="breadcrumb-item active">
+                        Dashboard < {{ user.get_full_name }} >
+                    </li>
+                </ol>
+
+
+                <!-- Table Section Start -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <i class="fas fa-cube mr-1"></i>
+                        All Products
+                    </div>
+
+                    <!-- Table Start -->
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
+                                <thead>
+                                <tr>
+                                    <th class="d-none"></th>
+                                    <th>Product id</th>
+                                    <th>Image</th>
+                                    <th>Product Name</th>
+                                    <th>Stock</th>
+                                    <th>Price</th>
+                                    <th>Offer</th>
+{#                                    <th>Category</th>#}
+                                    <th>Total Sell</th>
+                                    <th>Last Modified</th>
+                                </tr>
+                                </thead>
+
+                                <tbody>
+                                {% for product in products %}
+                                    <tr style="cursor: pointer" onclick="location.href='{% url "SELLER:edit-product" product.product_id %}'">
+                                        <td class="d-none"></td>
+                                        <td class="align-middle text-center" style="max-width: 8rem">{{ product.product_id }}</td>
+                                        <td style="max-width: 25rem">
+                                            <img
+                                                    src="/media/{{ product.primary_image }}"
+                                                    class="rounded mx-auto d-block"
+                                                    style="max-height: 100px; max-width: 100px; margin: auto;"
+                                                    alt="{{ product.product_id | truncatechars:10 }}"
+                                            >
+
+                                        </td>
+                                        <td class="align-middle" style="max-width: 18rem">{{ product.product_name | truncatechars:130}}</td>
+                                        <td class="align-middle text-center">{{ product.in_stock }}</td>
+                                        <td class="align-middle text-right">₹ {{ product.price | floatformat:2 }}</td>
+                                        <td class="align-middle text-right">₹ {{ product.offer_price }}</td>
+{#                                        <td class="align-middle">{{ product.category__category_name }}</td>#}
+                                        <td class="align-middle">{{ product.sell_count }}</td>
+                                        <td class="align-middle" style="max-width: 5rem">
+                                            <span class="d-none">{{ product.last_modified | date:"ymdHms"}}</span>
+                                            {{ product.last_modified }}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- Table Start -->
+                </div>
+                <!-- Table Section Start -->
+            </div>
+        </main>
+
+        {% include 'SELLER/includes/seller-footer.html' %}
+    </div>
+
+
+{% endblock body_content %}
