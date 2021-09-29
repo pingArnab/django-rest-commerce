@@ -5,8 +5,9 @@ from django.http import Http404
 from .models import Order, Transaction
 from USER.models import UserAddress, UserProfile
 from django.utils import timezone
+from DRC.settings import PROJECT_NAME
 
-__module_name = 'CTmela.' + __name__ + '::'
+__module_name = f'{PROJECT_NAME}.' + __name__ + '::'
 logger = logging.getLogger(__module_name)
 
 

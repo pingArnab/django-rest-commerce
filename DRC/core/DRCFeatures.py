@@ -1,3 +1,6 @@
+from DRC.settings import PROJECT_NAME
+
+
 class DEFAULT:
     COD = {
         'id': 'pod',
@@ -7,11 +10,11 @@ class DEFAULT:
                        'card / Credit card / Net banking payments at your doorstep. '
     }
 
-    CTMELA_DELIVERED = {
-        'id': 'ctmela-delivered',
-        'name': 'CTmela Delivered',
-        'image': '/media/features/ctmela-delivered',
-        'description': 'CTmela directly manages delivery for this product. Order delivery tracking to your doorstep '
+    SITE_DELIVERED = {
+        'id': f'{PROJECT_NAME}-delivered',
+        'name': f'{PROJECT_NAME} Delivered',
+        'image': f'/media/features/{PROJECT_NAME}-delivered',
+        'description': f'{PROJECT_NAME} directly manages delivery for this product. Order delivery tracking to your doorstep '
                        'is available. '
     }
 

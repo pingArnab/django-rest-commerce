@@ -5,7 +5,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from DRC.core.exceptions import ErrorResponse
-from DRC.core.CTConstant import ErrorCode, ErrorMessage
+from DRC.core.DRCConstant import ErrorCode, ErrorMessage
 from DRC.core.permissions import UserOnly
 from django.contrib.auth.models import User as AuthUser
 from TRANSACTION.models import Transaction

@@ -5,8 +5,9 @@ from DRC.core.DRCCommonUtil import KEYGEN
 from django.contrib.auth.models import User as AuthUser
 from PRODUCT.models import Seller, Product
 from USER.models import UserProfile
+from DRC.settings import PROJECT_NAME
 
-__module_name = 'CTmela.' + __name__
+__module_name = f'{PROJECT_NAME}.' + __name__ + '::'
 logger = logging.getLogger(__module_name)
 
 

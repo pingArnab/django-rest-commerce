@@ -4,8 +4,9 @@ from PRODUCT.models import Product
 from .models import UserProfile
 from django.contrib.auth.models import User
 from django.contrib.auth import logout
+from DRC.settings import PROJECT_NAME
 
-__module_name = 'CTmela.' + __name__
+__module_name = f'{PROJECT_NAME}.' + __name__ + '::'
 logger = logging.getLogger(__module_name)
 
 

@@ -4,8 +4,9 @@ from datetime import datetime
 from django.db import models
 from django.contrib.auth.models import User as authUser
 from DRC.core.DRCCommonUtil import KEYGEN
+from DRC.settings import PROJECT_NAME
 
-__module_name = 'CTmela.' + __name__ + '::'
+__module_name = f'{PROJECT_NAME}.' + __name__ + '::'
 logger = logging.getLogger(__module_name)
 
 

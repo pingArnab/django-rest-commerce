@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from django.template import loader
 from DRC.core.exceptions import ErrorResponse
 from DRC.settings import CONFIG
-from DRC.settings import D
+from DRC.settings import DOMAIN_NAME
 
 
 class Mail:

@@ -12,8 +12,9 @@ from TRANSACTION import manager as transaction_manager
 from PRODUCT.models import Product, Category
 from DRC.core.DRCCommonUtil import AccessLevel, CTfiles
 from TRANSACTION.models import Order
+from DRC.settings import PROJECT_NAME
 
-__module_name = 'CTmela.' + __name__ + '::'
+__module_name = f'{PROJECT_NAME}.' + __name__ + '::'
 logger = logging.getLogger(__module_name)
 
 

@@ -10,8 +10,9 @@ from django.core.files.storage import FileSystemStorage
 from django.http import Http404
 from django.shortcuts import redirect
 from django.core.mail import send_mail, EmailMultiAlternatives
+from DRC.settings import PROJECT_NAME
 
-__module_name = 'CTmela.' + __name__ + '::'
+__module_name = f'{PROJECT_NAME}.' + __name__ + '::'
 logger = logging.getLogger(__module_name)
 
 
