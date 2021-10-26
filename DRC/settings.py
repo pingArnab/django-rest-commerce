@@ -28,24 +28,24 @@ print(os.environ.get('MAIL_PASSWORD'))
 
 CONFIG = Configuration(BASE_DIR / 'config.yaml')
 PROJECT_NAME = CONFIG.PROJECT_NAME
-SERVER_PORT = os.environ.get('PORT') or 8000
+SERVER_PORT = os.environ.get('PORT')
 DOMAIN_NAME = os.environ.get('DOMAIN_NAME') or f'localhost:{SERVER_PORT}'
 
-
-runserver.default_port = SERVER_PORT
+if SERVER_PORT:
+    runserver.default_port = SERVER_PORT
 
 SECRET_KEY = os.environ.get('SECRET_KEY') or '$@#ij9b#15$7_#jg(f$9mws(x189f0fw28ho$zqg!^8d*b8e^t'
 
 # Configuration
 ENV_TYPE = os.environ.get('SERVER_ENV_TYPE') or ''
 if ENV_TYPE.upper() == 'TEST':
-    DEBUG_FLAG = False if (os.environ.get('DJANGO_DEBUG_MODE').upper() == 'FALSE') else True
+    DEBUG_FLAG = False if (os.environ.get('DJANGO_DEBUG_MODE', '').upper() == 'FALSE') else True
     DBConfig = {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db1.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 else:
-    DEBUG_FLAG = True if (os.environ.get('DJANGO_DEBUG_MODE').upper() == 'TRUE') else False
+    DEBUG_FLAG = True if (os.environ.get('DJANGO_DEBUG_MODE', '').upper() == 'TRUE') else False
     DBConfig = {
         'ENGINE': CONFIG.DB.ENGINE,
         'NAME': CONFIG.DB.NAME,
@@ -162,6 +162,7 @@ TEMPLATES = [
             ],
             'builtins': [
                 'SELLER.templatetags.custom_tag',
+                'HOME.templatetags.base_tag',
             ],
         },
     },
@@ -171,6 +172,10 @@ WSGI_APPLICATION = 'DRC.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 LOCAL = False
+
+DATABASES = {
+    'default': DBConfig
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
