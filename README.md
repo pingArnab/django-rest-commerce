@@ -2,7 +2,8 @@
     <div align="center">
         <h1>django rest commerce</h1>
         <div align="center">
-            <img src="https://img.shields.io/badge/Version-0.9.0-fe7d37?style=for-the-badge&logo=Git&logoColor=ffffff" alt="Version - 0.9.0"> 
+            <img src="https://img.shields.io/badge/VERSION-1.0.2-%2340B681" alt="Version - 1.0.2"> 
+            <img src="https://img.shields.io/badge/MADE%20IN-PYTHON-yellow" alt="Made in - Python"> 
         </div>
     </div>
 </section>
