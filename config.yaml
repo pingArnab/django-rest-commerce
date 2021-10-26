@@ -11,7 +11,7 @@ MAIL:
 
 DB:
   ENGINE: django.db.backends.postgresql_psycopg2
-  NAME: ctmela_prod1
+  NAME: drc_prod1
   HOST: localhost
   PORT: 5432
 
