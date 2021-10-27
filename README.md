@@ -11,7 +11,7 @@
 <br>
 
 <div align="center">
-    django-rest-commerce is a framework for building scalable API based e-commerce web application backend that offers all the features an e-commerce application might need with an easy to understand codebase to extend upon
+    django-rest-commerce is a project for building scalable API based e-commerce web application backend that offers all the features an e-commerce application might need with an easy to understand codebase to extend upon
 </div>
 
 <br>
