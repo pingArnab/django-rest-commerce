@@ -1,6 +1,7 @@
 import traceback
 
 from django import template
+from django.conf import settings
 from django.template.defaultfilters import stringfilter
 
 from TRANSACTION.models import Order
@@ -93,3 +94,8 @@ def status_color_class(status_coded: str):
         Order.STATUS.RETURNED: 'text-danger',
     }
     return status_dict.get(status_coded.strip())
+
+
+@register.simple_tag
+def get_project_name():
+    return settings.CONFIG.PROJECT_NAME
