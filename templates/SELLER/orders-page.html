@@ -12,14 +12,7 @@
     <div id="layoutSidenav_content">
         <main>
             <div class="container-fluid">
-                {#                <h1 class="mt-4">Seller Dashboard</h1>#}
                 <hr>
-                <ol class="breadcrumb mb-4">
-                    <li class="breadcrumb-item active">
-                        Dashboard < {{ user.get_full_name }} >
-                    </li>
-                </ol>
-
 
                 <!-- Table Section Start -->
                 {% include 'SELLER/includes/order_table.html' with order_list=order_list %}
