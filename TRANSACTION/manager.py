@@ -61,7 +61,8 @@ def getSellerOrdersDict(seller, status=''):
         'order_status', 'placed_at', 'last_updated_at',
         'shipped_at', 'delivered_at', 'refund_at'
     ).filter(
-        order_status__in=order_status
+        order_status__in=order_status,
+        product__seller__user_id=seller.id
     ).order_by(shorting_string)
     return order
 
