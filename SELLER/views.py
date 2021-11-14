@@ -92,7 +92,6 @@ def unmark_order_ready_to_ship(request):
         order_id = request.POST.get('order_id')
         if Order.objects.filter(order_id=order_id):
             order = Order.objects.get(order_id=order_id)
-            print(order.order_status)
             if order.order_status == Order.STATUS.READY_FOR_SHIPPING and order.product.seller.user == request.user:
                 order.order_status = Order.STATUS.PLACED
                 order.save()
