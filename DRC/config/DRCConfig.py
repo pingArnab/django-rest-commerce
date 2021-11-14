@@ -25,8 +25,8 @@ class _DBConfiguration:
     def __init__(self, db_conf: dict):
         self.__db = db_conf
 
-        self.ENGINE = self.__db.get('NAME')
-        self.NAME = self.__db.get('ADDRESS')
+        self.ENGINE = self.__db.get('ENGINE')
+        self.NAME = self.__db.get('NAME')
         self.HOST = self.__db.get('HOST')
         self.PORT = self.__db.get('PORT')
 
