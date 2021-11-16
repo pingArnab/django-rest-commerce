@@ -133,7 +133,7 @@ class Order(models.Model):
     __ORDER_STATUS_CHOICES = [
         ('PFP', 'Pending for Payment'),
         ('PLC', 'Placed'),
-        ('ARFS', 'Ready for Shipping'),
+        ('RFS', 'Ready for Shipping'),
         ('DPC', 'Dispatched'),
         ('OFD', 'Out for Delivery'),
         ('DLV', 'Delivered'),

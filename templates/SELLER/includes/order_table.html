@@ -1,3 +1,4 @@
+{% load humanize %}
 <div class="card mb-4">
     <div class="card-header">
         <i data-feather="list"></i> Orders Updates
@@ -6,93 +7,88 @@
     <!-- Table Start -->
     <div class="card-body">
         <div class="table-responsive">
-            <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
+            <table class="table table-sm table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
                 <thead>
                 <tr>
                     <th class="d-none"></th>
                     <th>Order id</th>
                     <th>Product</th>
-                    <th>Image</th>
                     <th>Quantity</th>
                     <th>Sold Price</th>
                     <th>Order Status</th>
                     <th>Updated at</th>
-                    <th>Action</th>
                 </tr>
                 </thead>
 
                 <tbody>
                 {% for order in order_list %}
-                    <tr>
+                    <tr data-toggle="modal" data-target="#{{ order.order_id }}_view">
                         <td class="d-none">{{ order.created_at }}</td>
-                        <td class="align-middle text-center" style="max-width: 18rem">{{ order.order_id }}</td>
+                        <td class="align-middle" style="max-width: 18rem">{{ order.order_id }}</td>
                         <td class="align-middle" style="max-width: 25rem">{{ order.product__product_name | truncatechars:125}}</td>
-                        <td style="max-width: 25rem">
-                            <img
-                                    src="/media/{{ order.product__primary_image }}"
-                                    class="rounded mx-auto d-block"
-                                    style="max-height: 100px; margin: auto;"
-                                    alt="{{ order.product__product_id | truncatechars:10 }}"
-                            >
-                        </td>
                         <td class="align-middle text-center">{{ order.product_quantity }}</td>
                         <td class="align-middle text-right">₹  {{ order | get_final_price | floatformat:2 }}</td>
-                        <td class="align-middle text-center {{ order.order_status | status_color_class }}">{{ order.order_status | to_status_text}}</td>
+                        <td class="align-middle text-right "><span class="{{ order.order_status | status_color_class }}">{{ order.order_status | to_status_text}}</span></td>
                         <td class="align-middle" style="max-width: 5rem">
                             <span class="d-none">{{ order.last_updated_at | date:"ymdHms"}}</span>
-                            {{ order.last_updated_at }}
+                            {{ order.last_updated_at | naturaltime}}
                         </td >
-                        <td class="align-middle text-center">
-                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#{{ order.order_id }}_view">view</button>
-                            <!-- Modal -->
-                            <div class="modal fade" id="{{ order.order_id }}_view" tabindex="-1" role="dialog" aria-labelledby="{{ order.order_id }}_view" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLongTitle">{{ order.order_id }}</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
+                    </tr>
+                    <!-- Model -->
+                    <div class="modal fade" id="{{ order.order_id }}_view" tabindex="-1" role="dialog" aria-labelledby="{{ order.order_id }}_view" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLongTitle">{{ order.order_id }}</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body text-left row">
+                                    <div class="col-4">
+                                         <img
+                                            src="/media/{{ order.product__primary_image }}"
+                                            class="rounded img-thumbnail"
+                                            style="max-height: 100px; margin: auto;"
+                                            alt="{{ order.product__product_id | truncatechars:10 }}"
+                                        >
                                     </div>
-                                    <div class="modal-body text-left">
-
-                                        <h6 class="product_id mb-4"><span class="text-secondary font-weight-bold">Product ID:</span> {{ order.product__product_id }}</h6>
-
+                                    <div class="col-8">
+                                        <h6 class="product_id mb-4"><span class="text-secondary font-weight-bold">Product ID:</span> <span class="text-primary">{{ order.product__product_id }}</span></h6>
                                         <p class="product_name "><span class="text-secondary font-weight-bold">Product name:</span> {{ order.product__product_name }}</p>
                                         <p class="price_quantity">
-                                            <span class="text-secondary font-weight-bold">Quantity:</span> {{ order.product_quantity }},
-                                            <span class="text-secondary font-weight-bold">Total Price:</span> <span class="text-primary font-weight-bold">₹ {{ order | get_final_price | floatformat:2 }}</span>
+                                            <span class="text-secondary font-weight-bold">Quantity:</span> <span class="text-success">{{ order.product_quantity }}</span>,
+                                            <span class="text-secondary font-weight-bold">Total Price:</span> <span class="text-success font-weight-bold">₹ {{ order | get_final_price | floatformat:2 }}</span>
                                         </p>
                                     </div>
-                                    <div class="modal-footer d-flex justify-content-between">
-                                        {% if order.order_status == 'PLC' %}
-                                            <span class="text-secondary font-weight-bold">Shipment status: <span class="text-warning">Waiting for packaging</span></span>
-                                            <form method="post" action="{% url 'SELLER:mark-order-ready-to-ship' %}">
-                                                {% csrf_token %}
-                                                <input type="hidden" name="order_id" value={{ order.order_id }}>
-                                                <input type="hidden" name="return-to" value={{ request.path }}>
-                                                <button type="submit" class="btn-sm btn-primary"><i data-feather="check-circle"></i> Ready to ship</button>
-                                            </form>
-                                        {% elif order.order_status == 'RFS' %}
-                                            <span class="text-secondary font-weight-bold">Shipment status: <span class="text-success">Ready for shipping</span></span>
-                                            <form method="post" action="{% url 'SELLER:unmark-order-ready-to-ship' %}">
-                                                {% csrf_token %}
-                                                <input type="hidden" name="order_id" value={{ order.order_id }}>
-                                                <input type="hidden" name="return-to" value={{ request.path }}>
-                                                <button type="submit" class="btn-sm btn-danger"><i data-feather="x-circle"></i> Unready to ship</button>
-                                            </form>
-                                        {% else %}
-                                            <span class="text-secondary font-weight-bold">
+                                </div>
+                                <div class="modal-footer d-flex justify-content-between">
+                                    {% if order.order_status == 'PLC' %}
+                                        <span class="text-secondary font-weight-bold">Shipment status: <span class="{{ order.order_status | status_color_class }}">Waiting for packaging</span></span>
+                                        <form method="post" action="{% url 'SELLER:mark-order-ready-to-ship' %}">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="order_id" value={{ order.order_id }}>
+                                            <input type="hidden" name="return-to" value={{ request.path }}>
+                                            <button type="submit" class="btn btn-primary"><i data-feather="check-circle"></i> Ready to ship</button>
+                                        </form>
+                                    {% elif order.order_status == 'RFS' %}
+                                        <span class="text-secondary font-weight-bold">Shipment status: <span class="{{ order.order_status | status_color_class }}">Ready for shipping</span></span>
+                                        <form method="post" action="{% url 'SELLER:unmark-order-ready-to-ship' %}">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="order_id" value={{ order.order_id }}>
+                                            <input type="hidden" name="return-to" value={{ request.path }}>
+                                            <button type="submit" class="btn btn-outline-danger"><i data-feather="x-circle"></i> Unready to ship</button>
+                                        </form>
+                                    {% else %}
+                                        <span class="text-secondary font-weight-bold">
                                                 Shipment status: <span class="{{ order.order_status | status_color_class }}">{{ order.order_status | to_status_text}}</span>
                                             </span>
-                                        {% endif %}
+                                    {% endif %}
 
-                                    </div>
-                                </div>
                                 </div>
                             </div>
-                        </td>
-                    </tr>
+                        </div>
+                    </div>
                 {% endfor %}
                 </tbody>
             </table>
