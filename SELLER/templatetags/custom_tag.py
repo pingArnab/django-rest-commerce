@@ -84,14 +84,14 @@ def to_status_text(status_coded: str):
 @register.filter
 def status_color_class(status_coded: str):
     status_dict = {
-        Order.STATUS.PENDING_FOR_PAYMENT: 'text-secondary',
-        Order.STATUS.PLACED: 'text-warning',
-        Order.STATUS.READY_FOR_SHIPPING: 'text-success',
-        Order.STATUS.DISPATCHED: 'text-primary',
-        Order.STATUS.OUT_FOR_DELIVERY: 'text-primary',
-        Order.STATUS.DELIVERED: 'text-primary',
-        Order.STATUS.REQUESTED_FOR_REFUND: 'text-danger',
-        Order.STATUS.RETURNED: 'text-danger',
+        Order.STATUS.PENDING_FOR_PAYMENT: 'badge badge-secondary',
+        Order.STATUS.PLACED: 'badge badge-warning',
+        Order.STATUS.READY_FOR_SHIPPING: 'badge badge-success',
+        Order.STATUS.DISPATCHED: 'badge badge-primary',
+        Order.STATUS.OUT_FOR_DELIVERY: 'badge badge-primary',
+        Order.STATUS.DELIVERED: 'badge badge-primary',
+        Order.STATUS.REQUESTED_FOR_REFUND: 'badge badge-danger',
+        Order.STATUS.RETURNED: 'badge badge-danger',
     }
     return status_dict.get(status_coded.strip())
 
