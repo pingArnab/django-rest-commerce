@@ -43,7 +43,14 @@ def get_final_price(order):
 
 
 @register.filter
+def get_abs(value):
+    return abs(value)
+
+
+@register.filter
 def date_to_year_month(number_of_days, t=None):
+    if not number_of_days:
+        return None
     years = number_of_days // 365
     months = (number_of_days - years * 365) // 30
     days = (number_of_days - years * 365 - months * 30)
@@ -82,16 +89,16 @@ def to_status_text(status_coded: str):
 
 
 @register.filter
-def status_color_class(status_coded: str):
+def status_color_badge(status_coded: str):
     status_dict = {
-        Order.STATUS.PENDING_FOR_PAYMENT: 'badge badge-secondary',
-        Order.STATUS.PLACED: 'badge badge-warning',
-        Order.STATUS.READY_FOR_SHIPPING: 'badge badge-success',
-        Order.STATUS.DISPATCHED: 'badge badge-primary',
-        Order.STATUS.OUT_FOR_DELIVERY: 'badge badge-primary',
-        Order.STATUS.DELIVERED: 'badge badge-primary',
-        Order.STATUS.REQUESTED_FOR_REFUND: 'badge badge-danger',
-        Order.STATUS.RETURNED: 'badge badge-danger',
+        Order.STATUS.PENDING_FOR_PAYMENT: 'p-2 badge badge-secondary',
+        Order.STATUS.PLACED: 'p-2 badge badge-warning',
+        Order.STATUS.READY_FOR_SHIPPING: 'p-2 badge badge-success',
+        Order.STATUS.DISPATCHED: 'p-2 badge badge-primary',
+        Order.STATUS.OUT_FOR_DELIVERY: 'p-2 badge badge-primary',
+        Order.STATUS.DELIVERED: 'p-2 badge badge-primary',
+        Order.STATUS.REQUESTED_FOR_REFUND: 'p-2 badge badge-danger',
+        Order.STATUS.RETURNED: 'p-2 badge badge-danger',
     }
     return status_dict.get(status_coded.strip())
 

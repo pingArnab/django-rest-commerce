@@ -1,6 +1,7 @@
+import datetime
 import logging
 
-from django.db import transaction
+from django.db.models import Sum, F
 from django.http import Http404
 from .models import Order, Transaction
 from USER.models import UserAddress, UserProfile
@@ -65,6 +66,86 @@ def getSellerOrdersDict(seller, status=''):
         product__seller__user_id=seller.id
     ).order_by(shorting_string)
     return order
+
+
+def get_seller_order_stat(seller):
+    new_orders = Order.objects.filter(
+        product__seller__user_id=seller.id,
+        order_status__in=[Order.STATUS.PLACED, Order.STATUS.READY_FOR_SHIPPING]
+    )
+    total_new_order = new_orders.count()
+    total_pending_order = new_orders.filter(order_status=Order.STATUS.PLACED).count()
+    new_order_stat = {
+        'total': total_new_order,
+        'new': total_pending_order,
+        'progress': int(((total_new_order - total_pending_order) / total_new_order) * 100)
+    }
+
+    total_ordered_count = Order.objects.filter(
+        product__seller__user_id=seller.id,
+        order_status__in=[Order.STATUS.PLACED, Order.STATUS.READY_FOR_SHIPPING,
+                          Order.STATUS.DISPATCHED, Order.STATUS.OUT_FOR_DELIVERY, Order.STATUS.DELIVERED]
+    ).count()
+    undelivered_ordered_count = Order.objects.filter(
+        product__seller__user_id=seller.id,
+        order_status__in=[Order.STATUS.DISPATCHED, Order.STATUS.OUT_FOR_DELIVERY]
+    ).count()
+    all_order_stat = {
+        'total': total_ordered_count,
+        'undelivered': undelivered_ordered_count,
+        'progress': int(((total_ordered_count - undelivered_ordered_count) / total_ordered_count) * 100)
+    }
+    return new_order_stat, all_order_stat
+
+
+def get_seller_customer_stat(seller):
+    total_customer_count = Order.objects.filter(
+        product__seller__user_id=seller.id
+    ).values('transaction__buyer').distinct().count()
+    new_customer_count = Order.objects.filter(
+        product__seller__user_id=seller.id,
+        created_at__lte=datetime.datetime.now().astimezone() - datetime.timedelta(days=7)
+    ).values('transaction__buyer').distinct().count()
+    return {
+        'total': total_customer_count,
+        'new': new_customer_count,
+        'progress': int((new_customer_count / total_customer_count) * 100)
+    }
+
+
+def get_seller_sales_stat(seller):
+    monthly_total_sale = Order.objects.filter(
+        product__seller__user_id=4,
+        placed_at__month=datetime.date.today().month,
+        placed_at__year=datetime.date.today().year
+    ).values('product__seller').annotate(total_sale=Sum(F('actual_price') - F('discount')))
+    today_total_sale = Order.objects.filter(
+        product__seller__user_id=4,
+        placed_at__day=datetime.date.today().day,
+        placed_at__month=datetime.date.today().month,
+        placed_at__year=datetime.date.today().year
+    ).values('product__seller').annotate(total_sale=Sum(F('actual_price') - F('discount')))
+    tomorrow_total_sale = Order.objects.filter(
+        product__seller__user_id=4,
+        placed_at__day=datetime.date.today().day - 1,
+        placed_at__month=datetime.date.today().month,
+        placed_at__year=datetime.date.today().year
+    ).values('product__seller').annotate(total_sale=Sum(F('actual_price') - F('discount')))
+
+    monthly = monthly_total_sale[0].get('total_sale') if monthly_total_sale else 0
+    today = today_total_sale[0].get('total_sale') if today_total_sale else 0
+    tomorrow = tomorrow_total_sale[0].get('total_sale') if tomorrow_total_sale else 0
+    # 'progress': int(((tomorrow_total_sale - today_total_sale) / tomorrow_total_sale) * 100)
+    # print(monthly)
+    # print(tomorrow)
+    # print(today)
+    # progress = [tomorrow-today, today-tomorrow]
+    return {
+        'monthly': monthly,
+        'today': today,
+        'tomorrow': tomorrow,
+        'progress':  int(((tomorrow - today) / tomorrow) * 100) if tomorrow else None
+    }
 
 
 def getUserOrdersDict(user, filters=None):

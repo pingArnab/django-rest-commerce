@@ -20,11 +20,21 @@ logger = logging.getLogger(__module_name)
 
 # Create your views here.
 @login_required(login_url='/login')
-def getSellerDashboard(request):
+def get_seller_dashboard(request):
     order = transaction_manager.getSellerOrdersDict(request.user, 'UPDATES')
     order_list = list(order)[:100]
+
+    new_order_stat, all_order_stat = transaction_manager.get_seller_order_stat(request.user)
+    customer_stat = transaction_manager.get_seller_customer_stat(request.user)
+    sales_stat = transaction_manager.get_seller_sales_stat(request.user)
     context = {
         'order_list': order_list,
+        'cards': {
+            'new_order_stat': new_order_stat,
+            'all_order_stat': all_order_stat,
+            'sales': sales_stat,
+            'customer': customer_stat
+        }
     }
     return render(request, 'SELLER/dashboard.html', context)
 

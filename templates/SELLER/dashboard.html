@@ -15,11 +15,11 @@
             <hr>
                 <ol class="breadcrumb mb-4">
                     <li class="breadcrumb-item active">
-                        <i data-feather="home"></i> &emsp; Dashboard &ensp;|&ensp; Hi, {{ user.first_name }}
+                        <i data-feather="home"></i> &emsp; Dashboard &ensp;|&ensp; Hi {{ user.first_name }}
                     </li>
                 </ol>
 
-                {% include 'SELLER/includes/cards.html' %}
+                {% include 'SELLER/includes/cards.html' with ongoing_order_details=ongoing_order_details %}
 
                 <!-- Table Section Start -->
                 {% include 'SELLER/includes/order_table.html' with order_list=order_list %}
