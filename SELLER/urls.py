@@ -6,7 +6,7 @@ app_name = 'SELLER'
 
 # urls
 urlpatterns = [
-    path('dashboard/', views.getSellerDashboard, name='dashboard'),
+    path('dashboard/', views.get_seller_dashboard, name='dashboard'),
     path('add-product/', views.add_product, name='add-product'),
     path('edit-product/<str:product_id>/', views.edit_product, name='edit-product'),
     path('delete-product/<str:product_id>/', views.delete_product, name='delete-product'),
