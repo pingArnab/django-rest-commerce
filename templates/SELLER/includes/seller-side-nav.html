@@ -1,4 +1,66 @@
-<!-- Side Navigation section start -->
+<nav id="sidebar">
+    <div id="sidebarCollapse" class="side-nav-toggle btn-dark">
+        <i data-feather="chevron-left" class="chevron_icon"></i>
+    </div>
+    <div class="sidebar-header">
+        <h3><a class="navbar-brand" href="{% url 'SELLER:dashboard' %}">{% get_project_name %}</a></h3>
+        <hr>
+    </div>
+    <ul class="list-unstyled components">
+        <p>MENUS</p>
+        <li><a class="nav-link" href="{% url 'SELLER:dashboard' %}"> <i data-feather="sliders"></i> Dashboard </a></li>
+
+        <li>
+            <a href="#product-menu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                <i data-feather="package"></i> Products
+            </a>
+            <ul class="collapse list-unstyled" id="product-menu">
+                <li><a href="{% url 'SELLER:all-products' %}">All Products</a></li>
+                <li><a href="{% url 'SELLER:add-product' %}">Add new products</a></li>
+            </ul>
+        </li>
+
+        <li>
+            <a href="#order-link" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                <i data-feather="list"></i> Manage Orders
+            </a>
+            <ul class="collapse list-unstyled" id="order-link">
+                <li><a class="nav-link collapsed" href="{% url 'SELLER:orders' 'all' %}">All Orders</a></li>
+                <li><a class="nav-link" href="{% url 'SELLER:orders' 'new' %}">New Order</a></li>
+                <li><a class="nav-link" href="{% url 'SELLER:orders' 'ongoing' %}">Ongoing Order</a></li>
+                <li><a class="nav-link" href="{% url 'SELLER:orders' 'delivered' %}">Delivered Order</a></li>
+            </ul>
+        </li>
+
+    </ul>
+    <ul class="list-unstyled CTAs user-container">
+        <li class="user-info">Logged in as: {{ user.get_full_name }}</li>
+        <li> <a href="{% url 'HOME:logout' %}" class="logout-btn">Logout</a> </li>
+    </ul>
+</nav>
+
+<script>
+    const collapseSidebar = () => {
+        console.log('trigger')
+        console.log(document.querySelector("#sidebar"))
+        console.log(document.querySelector("#sidebar").classList)
+        document.querySelector("#sidebar").classList.toggle('.active')
+        console.log(document.querySelector("#sidebar").classList)
+        document.querySelector(".content").classList.toggle('.active')
+        document.querySelector(".chevron_icon").classList.toggle('.active')
+    }
+
+    $(document).ready(function(){
+        $("#sidebarCollapse").on('click', function(){
+            $("#sidebar").toggleClass('active');
+            $(".content").toggleClass('active');
+            $(".chevron_icon").toggleClass('active')
+        });
+    });
+</script>
+
+
+<!-- Side Navigation section start --
 <div id="layoutSidenav_nav">
     <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
         <div class="sb-sidenav-menu">
@@ -42,4 +104,4 @@
         </div>
     </nav>
 </div>
-<!-- Side Navigation section end -->
+-- Side Navigation section end -->
