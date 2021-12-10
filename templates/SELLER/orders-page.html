@@ -7,21 +7,13 @@
 
 
 {% block body_content %}
-    {% include 'SELLER/includes/seller-side-nav.html' %}
 
-    <div id="layoutSidenav_content">
-        <main>
-            <div class="container-fluid">
-                <hr>
+    <div class="container-fluid">
+        <hr>
 
-                <!-- Table Section Start -->
-                {% include 'SELLER/includes/order_table.html' with order_list=order_list %}
-                <!-- Table Section end -->
-            </div>
-        </main>
-
-        {% include 'SELLER/includes/seller-footer.html' %}
+        <!-- Table Section Start -->
+        {% include 'SELLER/includes/order_table.html' with order_list=order_list %}
+        <!-- Table Section end -->
     </div>
-
 
 {% endblock body_content %}

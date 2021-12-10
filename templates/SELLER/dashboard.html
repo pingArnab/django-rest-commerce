@@ -2,33 +2,24 @@
 {% load static %}
 
 {% block nav_content %}
-    {% include 'SELLER/includes/seller-nav.html' %}
 {%  endblock nav_content %}
 
 
 {% block body_content %}
-    {% include 'SELLER/includes/seller-side-nav.html' %}
 
-    <div id="layoutSidenav_content">
-        <main>
-            <div class="container-fluid">
-            <hr>
-                <ol class="breadcrumb mb-4">
-                    <li class="breadcrumb-item active">
-                        <i data-feather="home"></i> &emsp; Dashboard &ensp;|&ensp; Hi {{ user.first_name }}
-                    </li>
-                </ol>
+        <hr>
+        <ol class="breadcrumb mb-4">
+            <li class="breadcrumb-item active">
+                <i data-feather="home"></i> &emsp; Dashboard &ensp;|&ensp; Hi {{ user.first_name }}
+            </li>
+        </ol>
 
-                {% include 'SELLER/includes/cards.html' with ongoing_order_details=ongoing_order_details %}
+        {% include 'SELLER/includes/cards.html' with ongoing_order_details=ongoing_order_details %}
 
-                <!-- Table Section Start -->
-                {% include 'SELLER/includes/order_table.html' with order_list=order_list %}
-                <!-- Table Section end -->
-            </div>
-        </main>
+        <!-- Table Section Start -->
+        {% include 'SELLER/includes/order_table.html' with order_list=order_list %}
+        <!-- Table Section end -->
 
-        {% include 'SELLER/includes/seller-footer.html' %}
-    </div>
 
 
 {% endblock body_content %}

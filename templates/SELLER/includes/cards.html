@@ -102,9 +102,11 @@
                                     {{ cards.customer.total }}
                                 </h2>
                             </div>
-                            <div class="col-7 text-right">
-                                <span>{{ cards.customer.progress }}% <i class="fa fa-arrow-up"></i></span>
-                            </div>
+                            {% if cards.customer.progress %}
+                                <div class="col-7 text-right">
+                                    <span>{{ cards.customer.progress }}% <i class="fa fa-arrow-up"></i></span>
+                                </div>
+                            {% endif %}
                         </div>
                         <div class="progress mt-1" data-height="8" style="height: 8px;">
                         <div class="progress-bar bg-primary" role="progressbar" data-width="{{ cards.customer.progress }}%"
@@ -163,13 +165,15 @@
                                      ₹ {% widthratio cards.sales.monthly 1000 1 %} K
                                 </h2>
                             </div>
-                            <div class="col-4 text-right">
-                                {% if cards.sales.progress < 0 %}
-                                    <span class="badge badge-success">{{ cards.sales.progress | get_abs }}% <i class="fa fa-arrow-up"></i></span>
-                                {% else %}
-                                    <span class="badge badge-danger">{{ cards.sales.progress }}% <i class="fa fa-arrow-down"></i></span>
-                                {% endif %}
-                            </div>
+                            {% if cards.sales.progress %}
+                                <div class="col-4 text-right">
+                                    {% if cards.sales.progress < 0 %}
+                                        <span class="badge badge-success">{{ cards.sales.progress | get_abs }}% <i class="fa fa-arrow-up"></i></span>
+                                    {% else %}
+                                        <span class="badge badge-danger">{{ cards.sales.progress }}% <i class="fa fa-arrow-down"></i></span>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
                         </div>
                         <div class="row">
                         <div class="col-6">

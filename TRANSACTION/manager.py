@@ -78,7 +78,7 @@ def get_seller_order_stat(seller):
     new_order_stat = {
         'total': total_new_order,
         'new': total_pending_order,
-        'progress': int(((total_new_order - total_pending_order) / total_new_order) * 100)
+        'progress': int(((total_new_order - total_pending_order) / total_new_order) * 100) if total_new_order else None
     }
 
     total_ordered_count = Order.objects.filter(
@@ -91,9 +91,9 @@ def get_seller_order_stat(seller):
         order_status__in=[Order.STATUS.DISPATCHED, Order.STATUS.OUT_FOR_DELIVERY]
     ).count()
     all_order_stat = {
-        'total': total_ordered_count,
-        'undelivered': undelivered_ordered_count,
-        'progress': int(((total_ordered_count - undelivered_ordered_count) / total_ordered_count) * 100)
+        'total': total_ordered_count or 0,
+        'undelivered': undelivered_ordered_count or 0,
+        'progress': int(((total_ordered_count - undelivered_ordered_count) / total_ordered_count) * 100) if total_ordered_count else None
     }
     return new_order_stat, all_order_stat
 
@@ -107,9 +107,9 @@ def get_seller_customer_stat(seller):
         created_at__lte=datetime.datetime.now().astimezone() - datetime.timedelta(days=7)
     ).values('transaction__buyer').distinct().count()
     return {
-        'total': total_customer_count,
-        'new': new_customer_count,
-        'progress': int((new_customer_count / total_customer_count) * 100)
+        'total': total_customer_count or 0,
+        'new': new_customer_count or 0,
+        'progress': int((new_customer_count / total_customer_count) * 100) if total_customer_count else None
     }
 
 
