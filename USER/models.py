@@ -19,7 +19,7 @@ logger = logging.getLogger(__module_name)
 class UserProfile(models.Model):
     # image Upload Path Customizer
     def uploadPathCustomizer(self, filename=None):
-        return '___uploads/{folder_name}/{sub_folder_name}/{file_name}.{file_extension}/'.format(
+        return '___uploads/{folder_name}/{sub_folder_name}/{file_name}.{file_extension}'.format(
             folder_name=self.__class__.__name__,
             sub_folder_name=self.user.username,
             file_name=KEYGEN.getRandom_StringDigit(20),
