@@ -85,6 +85,7 @@ INSTALLED_APPS = [
     'SELLER.apps.SellerConfig',
     'USER.apps.UserConfig',
     'TRANSACTION.apps.TransactionConfig',
+    'MESSAGE.apps.MessageConfig',
 
     # Extra Apps
     'django_cleanup.apps.CleanupConfig',

@@ -5,6 +5,7 @@ from SELLER import api_views as seller_api_views
 from USER import api_views as user_api_views
 from TRANSACTION import api_views as transactions_api_views
 from rest_framework_simplejwt import views as jwt_views
+from MESSAGE import api_views as message_api_views
 from . import customtokens
 
 urlpatterns = [
@@ -55,5 +56,10 @@ urlpatterns = [
 
     path('search/', product_api_views.search),
     path('search-suggestion/', product_api_views.search_suggestion),
+
+    path('msg/', message_api_views.all_msg_by_user),
+    path('msg/unread/', message_api_views.all_msg_by_user),
+    path('msg/<str:msg_id>/', message_api_views.msg_by_id),
+    path('msg/<str:msg_id>/mark-as-read/', message_api_views.mark_msg_as_read),
 
 ]
