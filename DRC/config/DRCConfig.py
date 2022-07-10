@@ -49,8 +49,9 @@ class Configuration:
         self.PROJECT_NAME = self.__config.get('NAME') or os.environ.get('PROJECT_NAME')
         self.MAIL = _MailConfiguration(self.__config.get('MAIL'))
         self.DB = _DBConfiguration(self.__config.get('DB'))
-        self.ALLOWED_HOST = self.__config.get('ALLOWED_HOST') or [os.environ.get('ALLOWED_HOST')]
-        self.CORS_ALLOWED_ORIGIN = self.__config.get('CORS_ALLOWED_ORIGIN') or [os.environ.get('CORS_ALLOWED_ORIGIN')]
+        self.ALLOWED_HOST = self.__config.get('ALLOWED_HOST') or [os.environ.get('ALLOWED_HOST') or 'localhost']
+        self.CORS_ALLOWED_ORIGIN = self.__config.get('CORS_ALLOWED_ORIGIN') or (
+            [os.environ.get('CORS_ALLOWED_ORIGIN')] if os.environ.get('CORS_ALLOWED_ORIGIN') else [])
 
     def __load_yaml(self):
         if self.__path.exists():
