@@ -138,3 +138,4 @@ __pycache__
 ___*
 ????_*\.py
 /*.sqlite3
+config.yaml
