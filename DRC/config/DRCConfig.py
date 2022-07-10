@@ -1,11 +1,13 @@
 from pathlib import Path
-
+import os
 import yaml
+from dotenv import load_dotenv
 
 
 class ConfigFileNotFoundException(Exception):
     def __init__(self):
-        self.message = 'config.yaml is not present in the project root'
+        self.message = 'config.yaml is not present in the project root or ' \
+                       'DB related configuration has not been provided in .env '
         super().__init__(self.message)
 
 
@@ -48,4 +50,17 @@ class Configuration:
             with open(self.__path) as yaml_file:
                 return yaml.load(yaml_file, Loader=yaml.FullLoader)
         else:
-            raise ConfigFileNotFoundException
+            load_dotenv()
+            if os.environ.get('SERVER_ENV_TYPE').upper() != 'TEST':
+                if (os.environ.get('DB_NAME') and
+                        os.environ.get('DB_HOST') and
+                        os.environ.get('DB_ENGINE') and
+                        os.environ.get('DB_POST')):
+                    return {
+                        'DB': {
+                            'NAME': os.environ.get('DB_NAME'),
+                            'HOST': os.environ.get('DB_HOST')
+                        }
+                    }
+                else:
+                    raise ConfigFileNotFoundException
