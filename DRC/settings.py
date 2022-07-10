@@ -23,9 +23,6 @@ from DRC.config.DRCConfig import Configuration
 load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-print(os.environ)
-print(os.environ.get('MAIL_PASSWORD'))
-
 CONFIG = Configuration(BASE_DIR / 'config.yaml')
 PROJECT_NAME = CONFIG.PROJECT_NAME
 SERVER_PORT = os.environ.get('PORT')
@@ -106,11 +103,13 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    # White Noise
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 CORS_ALLOWED_ORIGINS = CONFIG.CORS_ALLOWED_ORIGIN
 CORS_ORIGIN_ALLOW_ALL = True
-
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -199,7 +198,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'Asia/Kolkata'
-USE_I18N = True
+USE_I18N: str = True
 USE_L10N = True
 USE_TZ = True
 
@@ -210,6 +209,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = 'media/'
