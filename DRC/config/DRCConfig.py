@@ -55,11 +55,13 @@ class Configuration:
                 if (os.environ.get('DB_NAME') and
                         os.environ.get('DB_HOST') and
                         os.environ.get('DB_ENGINE') and
-                        os.environ.get('DB_POST')):
+                        os.environ.get('DB_PORT')):
                     return {
                         'DB': {
                             'NAME': os.environ.get('DB_NAME'),
-                            'HOST': os.environ.get('DB_HOST')
+                            'HOST': os.environ.get('DB_HOST'),
+                            'ENGINE': os.environ.get('DB_ENGINE'),
+                            'PORT': os.environ.get('DB_PORT')
                         }
                     }
                 else:
