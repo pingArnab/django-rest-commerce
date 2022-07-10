@@ -62,7 +62,8 @@ class Configuration:
                             'HOST': os.environ.get('DB_HOST'),
                             'ENGINE': os.environ.get('DB_ENGINE'),
                             'PORT': os.environ.get('DB_PORT')
-                        }
+                        },
+                        'MAIL': {}
                     }
                 else:
                     raise ConfigFileNotFoundException
