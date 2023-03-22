@@ -143,8 +143,8 @@ def add_product(request):
                 offer=True if request.POST.get('offer') else False,
                 cod=True if request.POST.get('cod') else False,
             )
-
-            product.category.add(Category.objects.get(category_id=request.POST.get('category')))
+            for category in request.POST.getlist('category'):
+                product.category.add(Category.objects.get(category_id=category))
             product.set_warranty(
                 years=int(request.POST.get('warranty_years', 0)) if request.POST.get('warranty_years',
                                                                                      0).isdigit() else 0,
@@ -251,7 +251,8 @@ def edit_product(request, product_id):
         if Category.objects.filter(category_id=request.POST.get('category')):
             # product.category = Category.objects.get(category_id=request.POST.get('category'))
             product.category.clear()
-            product.category.add(Category.objects.get(category_id=request.POST.get('category')))
+            for category in request.POST.getlist('category'):
+                product.category.add(Category.objects.get(category_id=category))
 
         product.short_description = request.POST.get('short-description')
         product.long_description = request.POST.get('long-description')

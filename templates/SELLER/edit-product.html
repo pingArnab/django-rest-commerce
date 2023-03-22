@@ -251,10 +251,9 @@
                     <label for="category">Category: </label>
                 </div>
                 <div class="col-md-5 mb-4 ">
-                    <select class="custom-select mr-sm-2" id="category" name="category" required>
-                    <option value="">Uncategorized</option>
+                    <select class="custom-select mr-sm-2" id="category" name="category" required multiple>
                         {% for category in categories %}
-                            <option value="{{ category.category_id }}"{% if product.category.first.category_id == category.category_id %} selected{% endif %}>
+                            <option value="{{ category.category_id }}"{% if category in product.category.all %} selected{% endif %}>
                                 {{ category.category_name }}
                             </option>
                         {% endfor %}
@@ -353,24 +352,6 @@
                 <button type="button" class="btn btn-outline-danger  mb-4 shadow" data-toggle="modal" data-target=".bd-example-modal-md">
                     <i data-feather="trash-2"></i>  Delete
                 </button>
-                <div class="modal fade bd-example-modal-md" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-md">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLongTitle">Do you really want to delete?</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">No</button>
-                                <a type="button" class="btn btn-danger" href="{% url 'SELLER:delete-product' product.product_id  %}">
-                                    <i data-feather="trash-2"></i>  Delete
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 <button class="btn btn-outline-primary  mb-4 shadow" type="submit"> <i data-feather="save"></i> Save</button>
             </div>
         </form>
@@ -429,3 +410,24 @@
     </script>
 
 {% endblock body_content %}
+
+{% block body_end_content %}
+    <div class="modal fade bd-example-modal-md" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Do you really want to delete?</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">No</button>
+                    <a type="button" class="btn btn-danger" href="{% url 'SELLER:delete-product' product.product_id  %}">
+                        <i data-feather="trash-2"></i>  Delete
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock body_end_content %}

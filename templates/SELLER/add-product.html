@@ -136,8 +136,8 @@
                     <label for="category">Category: </label>
                 </div>
                 <div class="col-md-5 mb-4 ">
-                    <select class="custom-select mr-sm-2" id="category" name="category" required>
-                        <option value="" selected disabled>Select Category...</option>
+                    <select class="custom-select mr-sm-2" id="category" name="category" required multiple>
+{#                        <option value="" selected disabled>Select Category...</option>#}
                         {% for category in categories %}
                             <option value="{{ category.category_id }}">{{ category.category_name }}</option>
                         {% endfor %}
