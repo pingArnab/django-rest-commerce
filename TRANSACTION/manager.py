@@ -115,18 +115,18 @@ def get_seller_customer_stat(seller):
 
 def get_seller_sales_stat(seller):
     monthly_total_sale = Order.objects.filter(
-        product__seller__user_id=4,
+        product__seller__user_id=seller.id,
         placed_at__month=datetime.date.today().month,
         placed_at__year=datetime.date.today().year
     ).values('product__seller').annotate(total_sale=Sum(F('actual_price') - F('discount')))
     today_total_sale = Order.objects.filter(
-        product__seller__user_id=4,
+        product__seller__user_id=seller.id,
         placed_at__day=datetime.date.today().day,
         placed_at__month=datetime.date.today().month,
         placed_at__year=datetime.date.today().year
     ).values('product__seller').annotate(total_sale=Sum(F('actual_price') - F('discount')))
     tomorrow_total_sale = Order.objects.filter(
-        product__seller__user_id=4,
+        product__seller__user_id=seller.id,
         placed_at__day=datetime.date.today().day - 1,
         placed_at__month=datetime.date.today().month,
         placed_at__year=datetime.date.today().year
