@@ -51,6 +51,9 @@
         {% include 'base/include/toasts.html' with messege=messege %}
         <script>
             feather.replace()
+            $(document).ready(function() {
+                $('.modal').appendTo("body");
+            });
         </script>
 
        {% block body_end_content %}
