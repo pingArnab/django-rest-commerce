@@ -59,11 +59,11 @@ LOGGING = {
     },
     'root': {
         'level': 'DEBUG',
-        'handlers': ['console', 'development_logfile'],
+        'handlers': ['development_logfile'],
     },
     'loggers': {
         'DRC': {
-            'handlers': ['development_logfile', 'production_logfile', 'console'],
+            'handlers': ['development_logfile', 'production_logfile'],
         },
         'dba': {
             'handlers': ['dba_logfile'],
