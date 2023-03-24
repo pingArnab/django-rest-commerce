@@ -14,11 +14,11 @@ LOGGING = {
     },
     'formatters': {
         'simple': {
-            'format': '[%(asctime)s] %(levelname)s %(message)s',
+            'format': 'LOG: [%(asctime)s] %(levelname)s %(message)s',
             'datefmt': '%Y-%m-%d %H:%M:%S'
         },
         'verbose': {
-            'format': '[%(asctime)s] %(levelname)s [%(name)s.%(funcName)s:%(lineno)d] %(message)s',
+            'format': 'LOG: [%(asctime)s] %(levelname)s [%(name)s.%(funcName)s:%(lineno)d] %(message)s',
             'datefmt': '%Y-%m-%d %H:%M:%S'
         },
     },
@@ -59,7 +59,7 @@ LOGGING = {
     },
     'root': {
         'level': 'DEBUG',
-        'handlers': ['console'],
+        'handlers': ['console', 'development_logfile'],
     },
     'loggers': {
         'DRC': {
