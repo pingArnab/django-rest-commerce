@@ -88,6 +88,9 @@ INSTALLED_APPS = [
     'django_cleanup.apps.CleanupConfig',
     'django.contrib.humanize',
     'dbbackup',  # django-dbbackup
+
+    # Log Viewer
+    "log_viewer",
 ]
 
 # DB Backup config
@@ -224,3 +227,14 @@ EMAIL_HOST_PASSWORD = os.environ.get('MAIL_PASSWORD')
 
 # for log
 LOGGING = LOG_CONFIG
+
+# Log Viewer
+LOG_VIEWER_FILES = ['DRC_dba.log']
+LOG_VIEWER_FILES_PATTERN = '*.log*'
+LOG_VIEWER_FILES_DIR = 'logs/'
+LOG_VIEWER_PAGE_LENGTH = 25       # total log lines per-page
+LOG_VIEWER_MAX_READ_LINES = 1000  # total log lines will be read
+LOG_VIEWER_FILE_LIST_MAX_ITEMS_PER_PAGE = 25  # Max log files loaded in Datatable per page
+LOG_VIEWER_PATTERNS = ['[INFO]', '[DEBUG]', '[WARNING]', '[ERROR]', '[CRITICAL]']
+LOG_VIEWER_EXCLUDE_TEXT_PATTERN = None  # String regex expression to exclude the log from line
+

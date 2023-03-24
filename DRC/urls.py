@@ -10,6 +10,7 @@ urlpatterns = [
     path('api/v1/', include('DRC.api_urls')),
     path('', include('HOME.urls')),
     path('seller/', include('SELLER.urls')),
+    path('logs/', include('log_viewer.urls')),
 
     # Static and Media
     url(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
