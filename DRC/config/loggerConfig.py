@@ -32,8 +32,12 @@ LOGGING = {
         'development_logfile': {
             'level': 'DEBUG',
             'filters': ['require_debug_true'],
-            'class': 'logging.FileHandler',
-            'filename': BASE_DIR / 'log/DRC_dev.log',
+
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': BASE_DIR / 'log/DRC_production.log',
+            'maxBytes': 1024 * 1024 * 10,  # 10MB
+            'backupCount': 5,
+
             'formatter': 'verbose'
         },
         'production_logfile': {
