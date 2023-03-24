@@ -14,11 +14,11 @@ LOGGING = {
     },
     'formatters': {
         'simple': {
-            'format': 'LOG: [%(asctime)s] %(levelname)s %(message)s',
+            'format': '[%(asctime)s] %(levelname)s %(message)s',
             'datefmt': '%Y-%m-%d %H:%M:%S'
         },
         'verbose': {
-            'format': 'LOG: [%(asctime)s] %(levelname)s [%(name)s.%(funcName)s:%(lineno)d] %(message)s',
+            'format': '[%(asctime)s] %(levelname)s [%(name)s.%(funcName)s:%(lineno)d] %(message)s',
             'datefmt': '%Y-%m-%d %H:%M:%S'
         },
     },
@@ -34,7 +34,7 @@ LOGGING = {
             'filters': ['require_debug_true'],
 
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': BASE_DIR / 'log/DRC_production.log',
+            'filename': BASE_DIR / 'log/DRC_dev.log',
             'maxBytes': 1024 * 1024 * 10,  # 10MB
             'backupCount': 5,
 
@@ -59,11 +59,11 @@ LOGGING = {
     },
     'root': {
         'level': 'DEBUG',
-        'handlers': ['console'],
+        'handlers': ['console', 'development_logfile'],
     },
     'loggers': {
         'DRC': {
-            'handlers': ['development_logfile', 'production_logfile'],
+            'handlers': ['development_logfile', 'production_logfile', 'console'],
         },
         'dba': {
             'handlers': ['dba_logfile'],

@@ -36,8 +36,9 @@ def get_seller_dashboard(request):
             'customer': customer_stat
         }
     }
-    logger.debug(f"Seller Cards: {context.get('cards')}")
+    logger.error(f"Seller Cards: {context.get('cards')}")
     # print(f"Seller Cards: {context.get('cards')}")
+    print(f"__module_name: {__module_name}")
     return render(request, 'SELLER/dashboard.html', context)
 
 
