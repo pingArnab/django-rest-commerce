@@ -7,7 +7,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 
-from SELLER.models import Seller
+from MESSAGE.models import Message
 from TRANSACTION import manager as transaction_manager
 from PRODUCT.models import Product, Category
 from DRC.core.DRCCommonUtil import AccessLevel, CTfiles
@@ -58,7 +58,7 @@ def getSellerProductsPage(request):
     return render(request, 'SELLER/products-page.html', context)
 
 
-def getOrderView(request, status: str, limit=None):
+def get_order_view(request, status: str, limit=None):
     redirect_url = AccessLevel.checkAccess(request.user, allowed_access_level=AccessLevel.SELLER)
     if redirect_url:
         return redirect_url
@@ -68,6 +68,7 @@ def getOrderView(request, status: str, limit=None):
     else:
         order_list = transaction_manager.getSellerOrdersDict(request.user, status)
     context = {
+        'no_cancel_order_list': Order.NON_CANCELABLE_LIST,
         'order_list': order_list,
         'key': status,
     }
@@ -355,3 +356,36 @@ def getOrderData(request, status: str, limit=None):
     except Exception as ex:
         logger.exception('getOrderData : {}'.format(ex))
         return JsonResponse({'status': 400})
+
+
+def cancel_order(request):
+    FUNCTION_NAME = 'cancel_order'
+    redirect_url = AccessLevel.checkAccess(request.user, allowed_access_level=AccessLevel.SELLER)
+    if redirect_url:
+        return redirect_url
+    if request.method == 'POST':
+        return_to = request.POST.get('return-to') or 'SELLER:dashboard'
+        order_id = request.POST.get('order_id')
+        seller_comment = request.POST.get('seller_comment')
+        logger.debug(f'{FUNCTION_NAME}-> Canceled request received for Order: {order_id}')
+        if Order.objects.filter(order_id=order_id):
+            order = Order.objects.get(order_id=order_id)
+            if order.order_status != Order.STATUS.CANCELED and order.product.seller==request.user:
+                order.order_status = Order.STATUS.CANCELED
+                msg = Message.objects.create(
+                    title=f'Order Canceled: {order_id}',
+                    body=f'Order Canceled by seller with below comment: \n {seller_comment}',
+                    receiver=order.transaction.buyer,
+                    sender=request.user,
+                )
+                order.save()
+                logger.debug(f'{FUNCTION_NAME}-> Order canceled: {order_id}')
+                logger.debug(f'{FUNCTION_NAME}-> Order canceled: {order_id}')
+            else:
+                messages.error(request, 'Invalid request')
+        else:
+            messages.error(request, 'Invalid Order id')
+        return redirect(return_to)
+    else:
+        raise Http404
+

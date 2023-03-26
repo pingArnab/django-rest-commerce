@@ -84,6 +84,7 @@ def to_status_text(status_coded: str):
         Order.STATUS.DELIVERED: 'Delivered',
         Order.STATUS.REQUESTED_FOR_REFUND: 'Requested for Return',
         Order.STATUS.RETURNED: 'Returned',
+        Order.STATUS.CANCELED: 'Canceled',
     }
     return status_dict.get(status_coded.strip())
 
@@ -99,6 +100,7 @@ def status_color_badge(status_coded: str):
         Order.STATUS.DELIVERED: 'p-2 badge badge-primary',
         Order.STATUS.REQUESTED_FOR_REFUND: 'p-2 badge badge-danger',
         Order.STATUS.RETURNED: 'p-2 badge badge-danger',
+        Order.STATUS.CANCELED: 'p-2 badge badge-danger',
     }
     return status_dict.get(status_coded.strip())
 

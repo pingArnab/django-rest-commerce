@@ -139,7 +139,9 @@ class Order(models.Model):
         ('DLV', 'Delivered'),
         ('RFR', 'Requested for Return'),
         ('RTN', 'Returned'),
+        ('CNL', 'Canceled'),
     ]
+    NON_CANCELABLE_LIST = ['CNL', 'DLV', 'RTN']
 
     class STATUS:
         PENDING_FOR_PAYMENT = 'PFP'
@@ -150,12 +152,13 @@ class Order(models.Model):
         DELIVERED = 'DLV'
         REQUESTED_FOR_REFUND = 'RFR'
         RETURNED = 'RTN'
+        CANCELED = 'CNL'
 
     order_id = models.CharField(primary_key=True, max_length=30, default=generateOrderRefId, editable=False)
 
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE)
-
+    buyer = models.ForeignKey(AuthUser, on_delete=models.CASCADE)
     product_quantity = models.IntegerField(default=1)
 
     actual_price = models.FloatField(default=0)

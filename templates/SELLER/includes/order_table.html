@@ -54,7 +54,18 @@
                                         >
                                     </div>
                                     <div class="col-8">
-                                        <h6 class="product_id mb-4"><span class="text-secondary font-weight-bold">Product ID:</span> <span class="text-primary">{{ order.product__product_id }}</span></h6>
+                                        <h6 class="product_id mb-4">
+                                            <span class="text-secondary font-weight-bold">Product ID:</span>
+                                            <span class="text-primary">{{ order.product__product_id }}</span>
+                                            {% if order.order_status not in no_cancel_order_list %}
+                                                <form class="p-0 m-0" method="post" action="{% url 'SELLER:cancel-order' %}">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="order_id" value={{ order.order_id }}>
+                                                    <input type="hidden" name="return-to" value={{ request.path }}>
+                                                    <button type="submit" class="badge badge-danger">Cancel</button>
+                                                </form>
+                                            {% endif %}
+                                        </h6>
                                         <p class="product_name "><span class="text-secondary font-weight-bold">Product name:</span> {{ order.product__product_name }}</p>
                                         <p class="price_quantity">
                                             <span class="text-secondary font-weight-bold">Quantity:</span> <span class="badge badge-primary">{{ order.product_quantity }}</span> |
@@ -63,8 +74,10 @@
                                     </div>
                                 </div>
                                 <div class="modal-footer d-flex justify-content-between">
+                                <span class="text-secondary font-weight-bold">
+                                    Shipment status: <span class="{{ order.order_status | status_color_badge }}">{{ order.order_status | to_status_text}}</span>
+                                </span>
                                     {% if order.order_status == 'PLC' %}
-                                        <span class="text-secondary font-weight-bold">Shipment status: <span class="{{ order.order_status | status_color_badge }}">Waiting for packaging</span></span>
                                         <form method="post" action="{% url 'SELLER:mark-order-ready-to-ship' %}">
                                             {% csrf_token %}
                                             <input type="hidden" name="order_id" value={{ order.order_id }}>
@@ -72,7 +85,6 @@
                                             <button type="submit" class="btn btn-primary"><i data-feather="check-circle"></i> Ready to ship</button>
                                         </form>
                                     {% elif order.order_status == 'RFS' %}
-                                        <span class="text-secondary font-weight-bold">Shipment status: <span class="{{ order.order_status | status_color_badge }}">Ready for shipping</span></span>
                                         <form method="post" action="{% url 'SELLER:unmark-order-ready-to-ship' %}">
                                             {% csrf_token %}
                                             <input type="hidden" name="order_id" value={{ order.order_id }}>
@@ -80,9 +92,6 @@
                                             <button type="submit" class="btn btn-outline-danger"><i data-feather="x-circle"></i> Unready to ship</button>
                                         </form>
                                     {% else %}
-                                        <span class="text-secondary font-weight-bold">
-                                                Shipment status: <span class="{{ order.order_status | status_color_badge }}">{{ order.order_status | to_status_text}}</span>
-                                            </span>
                                     {% endif %}
 
                                 </div>

@@ -15,6 +15,7 @@ urlpatterns = [
     path('order/unmark-order-ready-to-ship/', views.unmark_order_ready_to_ship, name='unmark-order-ready-to-ship'),
     path('api/orders/<str:status>/', views.getOrderData),
     path('api/orders/<str:status>/<int:limit>/', views.getOrderData),
-    path('orders/<str:status>/', views.getOrderView, name='orders'),
-    path('orders/<str:status>/<int:limit>/', views.getOrderView, name='orders-limit'),
+    path('orders/<str:status>/', views.get_order_view, name='orders'),
+    path('orders/<str:status>/<int:limit>/', views.get_order_view, name='orders-limit'),
+    path('order/cancel-order/', views.cancel_order, name='cancel-order'),
 ]

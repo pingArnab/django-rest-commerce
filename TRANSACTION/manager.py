@@ -53,7 +53,8 @@ def getSellerOrdersDict(seller, status=''):
             Order.STATUS.OUT_FOR_DELIVERY,
             Order.STATUS.DELIVERED,
             Order.STATUS.REQUESTED_FOR_REFUND,
-            Order.STATUS.RETURNED
+            Order.STATUS.RETURNED,
+            Order.STATUS.CANCELED,
         ]
     order = Order.objects.values(
         'order_id', 'product__product_name', 'product__product_id',
