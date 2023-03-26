@@ -180,7 +180,6 @@ def initiateOrderTransaction(buyer: UserProfile, address: UserAddress, uuid, ref
     try:
         transaction = Transaction.create_transaction(
             reference_id=reference_id,
-            buyer=buyer,
             products=buyer.cart,
             total_amount=buyer.calculate_cart_total_amount()['total_selling_price'],
             total_discount=buyer.calculate_cart_total_amount()['total_discount'],
@@ -193,8 +192,6 @@ def initiateOrderTransaction(buyer: UserProfile, address: UserAddress, uuid, ref
             buyer.get_cart_products().count()) + '   ---UUID({})'.format(uuid))
         for product in buyer.get_cart_products():
             order = Order.create_order(
-                buyer=buyer,
-                seller=product.seller,
                 product=product,
                 quantity=product.quantity,
                 transaction=transaction,

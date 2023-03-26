@@ -59,11 +59,7 @@ class Transaction(models.Model):
 
     reference_id = models.CharField(primary_key=True, max_length=30, default=generateTransactionRefId, editable=False)
 
-    total_actual_price = models.FloatField(default=0)
-    total_discount = models.FloatField(default=0)
-    total_delivery_charge = models.FloatField(default=0)
-
-    payable_amount = models.FloatField(default=0, editable=False)
+    amount = models.FloatField(default=0, blank=False, null=False)
 
     shipping_address = models.TextField(default='{}')
     billing_address = models.TextField(default='{}')
@@ -77,38 +73,23 @@ class Transaction(models.Model):
     payment_gateway_ref = models.CharField(max_length=50, blank=True, null=True)
     payment_status = models.CharField(max_length=1, choices=__PAYMENT_STATUS_CHOICES, default='I')  # i/s/f/p
 
-    def save(self, *args, **kwargs):
-        self.payable_amount = self.get_total_payable_amount()
-        super(Transaction, self).save(*args, **kwargs)
-
-    def get_subtotal(self):
-        return self.total_actual_price - self.total_discount
-
-    def get_total_payable_amount(self):
-        return self.get_subtotal() + self.total_delivery_charge
-
     @staticmethod
-    def create_transaction(buyer, products, total_amount, total_discount, address, total_delivery_charge=0.0,
+    def create_transaction(products, total_amount, total_discount, address, total_delivery_charge=0.0,
                            reference_id=None,
                            billing_address=None):
         billing_address = billing_address or address
         if reference_id:
             transaction = Transaction.objects.create(
                 reference_id=reference_id,
-                buyer=buyer,
                 purchased_products=products,
-                total_amount=total_amount,
-                total_delivery_charge=total_delivery_charge,
-                total_discount=total_discount,
+                amount=total_amount + total_delivery_charge - total_discount,
                 shipping_address=address,
                 billing_address=billing_address,
             )
         else:
             transaction = Transaction.objects.create(
-                buyer=buyer,
                 purchased_products=products,
-                total_amount=total_amount,
-                total_discount=total_discount,
+                amount=total_amount + total_delivery_charge - total_discount,
                 shipping_address=address,
                 billing_address=billing_address,
             )
