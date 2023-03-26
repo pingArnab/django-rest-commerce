@@ -59,8 +59,6 @@ class Transaction(models.Model):
 
     reference_id = models.CharField(primary_key=True, max_length=30, default=generateTransactionRefId, editable=False)
 
-    buyer = models.ForeignKey(AuthUser, on_delete=models.CASCADE)
-
     total_actual_price = models.FloatField(default=0)
     total_discount = models.FloatField(default=0)
     total_delivery_charge = models.FloatField(default=0)
