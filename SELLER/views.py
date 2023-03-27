@@ -1,3 +1,4 @@
+import datetime
 import logging
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
@@ -372,6 +373,9 @@ def cancel_order(request):
             order = Order.objects.get(order_id=order_id)
             if order.order_status != Order.STATUS.CANCELED and order.product.seller.user == request.user:
                 order.order_status = Order.STATUS.CANCELED
+                order.created_at = datetime.datetime.now().astimezone()
+                order.product.in_stock += order.product_quantity
+
                 msg = Message.objects.create(
                     title=f'Order Canceled: {order_id}',
                     body=f'Order Canceled by seller with below comment: \n {seller_comment}',
