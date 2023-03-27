@@ -370,16 +370,16 @@ def cancel_order(request):
         logger.debug(f'{FUNCTION_NAME}-> Canceled request received for Order: {order_id}')
         if Order.objects.filter(order_id=order_id):
             order = Order.objects.get(order_id=order_id)
-            if order.order_status != Order.STATUS.CANCELED and order.product.seller==request.user:
+            if order.order_status != Order.STATUS.CANCELED and order.product.seller.user == request.user:
                 order.order_status = Order.STATUS.CANCELED
                 msg = Message.objects.create(
                     title=f'Order Canceled: {order_id}',
                     body=f'Order Canceled by seller with below comment: \n {seller_comment}',
-                    receiver=order.transaction.buyer,
+                    receiver=order.buyer,
                     sender=request.user,
                 )
+                msg.save()
                 order.save()
-                logger.debug(f'{FUNCTION_NAME}-> Order canceled: {order_id}')
                 logger.debug(f'{FUNCTION_NAME}-> Order canceled: {order_id}')
             else:
                 messages.error(request, 'Invalid request')
@@ -388,4 +388,3 @@ def cancel_order(request):
         return redirect(return_to)
     else:
         raise Http404
-
