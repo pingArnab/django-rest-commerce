@@ -1,3 +1,4 @@
+import logging
 import traceback
 
 from rest_framework.decorators import api_view, permission_classes
@@ -15,6 +16,11 @@ from PRODUCT.models import Product
 from DRC.core.DRCConstant import ErrorMessage, ErrorCode
 from DRC.core.mail import UserVerificationMail, PasswordResetMail
 from DRC.settings import DOMAIN_NAME
+from DRC.settings import PROJECT_NAME
+
+
+__module_name = f'{PROJECT_NAME}.' + __name__ + '::'
+logger = logging.getLogger(__module_name)
 
 
 @api_view(['POST'])
@@ -192,8 +198,9 @@ def user_wishlist(request, product_id: str = None):
 @api_view(['GET', 'POST', 'PUT', 'DELETE'])
 @permission_classes([IsAuthenticated, UserOnly])
 def user_cart(request, product_id: str = None):
+    FUNCTION_NAME = 'user_cart'
     user: AuthUser = request.user
-
+    logger.debug(f'{FUNCTION_NAME} -> Request from user: {AuthUser}')
     # Add to cart
     if request.method == 'POST':
         if not Product.objects.filter(product_id=product_id):

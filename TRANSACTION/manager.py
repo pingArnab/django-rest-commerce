@@ -102,11 +102,11 @@ def get_seller_order_stat(seller):
 def get_seller_customer_stat(seller):
     total_customer_count = Order.objects.filter(
         product__seller__user_id=seller.id
-    ).values('transaction__buyer').distinct().count()
+    ).values('buyer').distinct().count()
     new_customer_count = Order.objects.filter(
         product__seller__user_id=seller.id,
         created_at__lte=datetime.datetime.now().astimezone() - datetime.timedelta(days=7)
-    ).values('transaction__buyer').distinct().count()
+    ).values('buyer').distinct().count()
     return {
         'total': total_customer_count or 0,
         'new': new_customer_count or 0,

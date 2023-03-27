@@ -78,20 +78,14 @@ def checkout_pre_process(request):
 
     try:
         total_price = Cart.total_amount_by_username(username=user.username)
-        total_discount = Cart.total_amount_by_username(username=user.username)
+        total_discount = Cart.total_discount_by_username(username=user.username)
         total_delivery_charge = Cart.total_deliver_charge_by_username(username=user.username)
 
         Cart.total_discount_by_username(username=user.username)
         new_transaction = Transaction.objects.create(
-            buyer=user,
-
-            total_actual_price=total_price + total_discount,
-            total_discount=total_discount,
-            total_delivery_charge=total_delivery_charge,
-
+            amount=total_price-total_discount+total_delivery_charge,
             shipping_address=shipping_address.getAddressJson(),
             billing_address=billing_address.getAddressJson(),
-
             payment_method=payment_method
         )
         new_transaction.save()
@@ -99,6 +93,7 @@ def checkout_pre_process(request):
         for cart in user.cart_set.all():
             new_order = Order.objects.create(
                 transaction_id=new_transaction.reference_id,
+                buyer=cart.user,
                 product_id=cart.product.product_id,
                 product_quantity=cart.quantity,
                 actual_price=cart.product.get_price().get('actual_price'),

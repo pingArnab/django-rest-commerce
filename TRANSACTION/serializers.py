@@ -71,7 +71,6 @@ class OrderShortSerializer(serializers.ModelSerializer):
 
 class TransactionSerializer(serializers.ModelSerializer):
     orders = serializers.SerializerMethodField()
-    price = serializers.SerializerMethodField()
     billing_address = serializers.SerializerMethodField()
     shipping_address = serializers.SerializerMethodField()
 
@@ -89,14 +88,6 @@ class TransactionSerializer(serializers.ModelSerializer):
     @staticmethod
     def get_shipping_address(transaction: Transaction):
         return transaction.get_shipping_address()
-
-    @staticmethod
-    def get_price(transaction: Transaction):
-        return {
-            'subtotal': transaction.get_subtotal(),
-            'total_shipping': transaction.total_delivery_charge,
-            'total': transaction.get_total_payable_amount()
-        }
 
     @staticmethod
     def get_orders(transaction: Transaction):
