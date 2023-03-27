@@ -16,14 +16,16 @@ class DataNotFoundException(CTMException):
 
 
 class ErrorResponse:
-    def __init__(self, code, msg, details=None):
+    def __init__(self, code, msg, details=None, extra=None):
         self.code = code
         self.msg = msg
         self.details = details
+        self.extra = extra
         self.response = Response({
             'error': {
                 'code': self.code,
                 'message': self.msg,
-                'details': self.details
+                'details': self.details,
+                'extra': self.extra
             }
         }, 400)

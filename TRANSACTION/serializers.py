@@ -77,7 +77,7 @@ class TransactionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Transaction
         fields = (
-            'reference_id', 'orders', 'price',
+            'reference_id', 'orders',
             'billing_address', 'shipping_address', 'payment_method'
         )
 

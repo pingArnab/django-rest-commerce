@@ -1,4 +1,5 @@
 import datetime
+import logging
 import traceback
 
 from rest_framework.decorators import api_view, permission_classes
@@ -8,10 +9,16 @@ from DRC.core.exceptions import ErrorResponse
 from DRC.core.DRCConstant import ErrorCode, ErrorMessage
 from DRC.core.permissions import UserOnly
 from django.contrib.auth.models import User as AuthUser
+
+from DRC.settings import PROJECT_NAME
 from TRANSACTION.models import Transaction
 from USER.models import Cart, UserAddress
 from .models import Order
 from .serializers import OrderSerializer, TransactionSerializer
+
+
+__module_name = f'{PROJECT_NAME}.' + __name__ + '::'
+logger = logging.getLogger(__module_name)
 
 
 @api_view(['GET'])
@@ -50,6 +57,7 @@ def order_by_id(request, order_id: str):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated, UserOnly])
 def checkout_pre_process(request):
+    FUNCTION_NAME = 'checkout_pre_process'
     user: AuthUser = request.user
 
     new_transaction = None
@@ -69,6 +77,21 @@ def checkout_pre_process(request):
 
     if not user.cart_set.all():
         return ErrorResponse(code=ErrorCode.EMPTY_CART, msg=ErrorMessage.EMPTY_CART).response
+
+    out_of_stock_products = []
+    for cart in user.cart_set.all():
+        if (cart.product.in_stock - cart.quantity) < 0:
+            out_of_stock_products.append(cart.product.product_id)
+
+    if out_of_stock_products:
+        logger.warning(f'{FUNCTION_NAME} -> Following products are out of stock: {out_of_stock_products.__str__()}')
+        return ErrorResponse(
+            code=400,
+            msg='Products are out of stock',
+            extra={
+                "out_of_stock_products": out_of_stock_products
+            }
+        ).response
 
     payment_method = request.data.get('payment_method')
     if not payment_method:
@@ -130,6 +153,7 @@ def transaction_by_id(request, transaction_id: str):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated, UserOnly])
 def checkout_confirmation(request):
+    FUNCTION_NAME = 'checkout_confirmation'
     user: AuthUser = request.user
     transaction_id = request.data.get('transaction_id').strip() if request.data.get('transaction_id') else None
     if not Transaction.objects.filter(reference_id=transaction_id):
@@ -141,12 +165,31 @@ def checkout_confirmation(request):
 
     if transaction.payment_method in [Transaction.METHOD.PAY_ON_DELIVERY]:
         transaction.payment_status = Transaction.STATUS.SUCCESS
+        transaction.success_at = datetime.datetime.now().astimezone()
         transaction.order_set.update(order_status=Order.STATUS.PLACED)
+
+        out_of_stock_products = []
+        for order in transaction.order_set.all():
+            if (order.product.in_stock - order.product_quantity) < 0:
+                out_of_stock_products.append(order.product.product_id)
+
+        if out_of_stock_products:
+            logger.warning(f'{FUNCTION_NAME} -> Following products are out of stock: {out_of_stock_products.__str__()}')
+            return ErrorResponse(
+                code=400,
+                msg='Products are out of stock',
+                extra={
+                    "out_of_stock_products": out_of_stock_products
+                }
+            ).response
+
         for order in transaction.order_set.all():
             order.order_status = Order.STATUS.PLACED
+            order.product.in_stock -= order.product_quantity
             order.product.sell_count += order.product_quantity
             order.product.seller.total_sale += order.product_quantity
             order.product.seller.save()
+            order.placed_at = datetime.datetime.now().astimezone()
             order.product.save()
             order.save()
         transaction.save()
