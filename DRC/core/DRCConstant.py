@@ -96,6 +96,7 @@ class ErrorCode:
     MISSING_IDP_KEY = 520
     MISSING_OTP = 521
     INVALID_OTP = 522
+    NON_CANCELABLE_ORDER = 523
 
 
 class ErrorMessage:
@@ -126,6 +127,7 @@ class ErrorMessage:
     MISSING_IDP_KEY = 'IDP key is missing'
     MISSING_OTP = 'OTP is missing'
     INVALID_OTP = 'Invalid OTP'
+    NON_CANCELABLE_ORDER = 'Non-cancelable Order'
 
 
 class CONTROL:

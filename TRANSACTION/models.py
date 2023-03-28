@@ -153,7 +153,8 @@ class Order(models.Model):
     placed_at = models.DateTimeField(null=True, blank=True)
     shipped_at = models.DateTimeField(null=True, blank=True)
     delivered_at = models.DateTimeField(null=True, blank=True)
-    refund_at = models.DateTimeField(null=True, blank=True)
+    returned_at = models.DateTimeField(null=True, blank=True)
+    canceled_at = models.DateTimeField(null=True, blank=True)
 
     refund_transaction = models.ForeignKey(Transaction, on_delete=models.SET_NULL,
                                            related_name='refund', null=True, blank=True)

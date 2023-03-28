@@ -26,12 +26,12 @@ logger = logging.getLogger(__module_name)
 def all_orders(request):
     user: AuthUser = request.user
     orders_non_pending = Order.objects.filter(
-        transaction__buyer=user,
+        buyer_id=user.id,
     ).exclude(
         order_status=Order.STATUS.PENDING_FOR_PAYMENT
     )
     orders_pending_for_payment = Order.objects.filter(
-        transaction__buyer=user,
+        buyer_id=user.id,
         order_status=Order.STATUS.PENDING_FOR_PAYMENT,
         created_at__gte=datetime.datetime.now().astimezone() - datetime.timedelta(minutes=15)
     )
@@ -45,12 +45,38 @@ def all_orders(request):
 @permission_classes([IsAuthenticated, UserOnly])
 def order_by_id(request, order_id: str):
     user: AuthUser = request.user
-    if not Order.objects.filter(transaction__buyer_id=user.id, order_id=order_id):
+    if not Order.objects.filter(buyer_id=user.id, order_id=order_id):
         return ErrorResponse(code=ErrorCode.INVALID_ORDER_ID, msg=ErrorMessage.INVALID_ORDER_ID).response
-    order = Order.objects.get(transaction__buyer_id=user.id, order_id=order_id)
+    order = Order.objects.get(buyer_id=user.id, order_id=order_id)
     if (order.order_status == Order.STATUS.PENDING_FOR_PAYMENT and
             order.created_at <= datetime.datetime.now().astimezone() - datetime.timedelta(minutes=15)):
         return ErrorResponse(code=ErrorCode.Expired_ORDER, msg=ErrorMessage.Expired_ORDER).response
+    return Response(OrderSerializer(order, many=False).data)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated, UserOnly])
+def cancel_order_by_id(request, order_id: str):
+    FUNCTION_NAME = 'cancel_order_by_id'
+    user: AuthUser = request.user
+    request.data.get('reason').strip()
+    if not Order.objects.filter(buyer_id=user.id, order_id=order_id):
+        return ErrorResponse(code=ErrorCode.INVALID_ORDER_ID, msg=ErrorMessage.INVALID_ORDER_ID).response
+    order = Order.objects.get(buyer_id=user.id, order_id=order_id)
+    if order.order_status in Order.NON_CANCELABLE_LIST:
+        return ErrorResponse(
+            code=ErrorCode.NON_CANCELABLE_ORDER,
+            msg=ErrorMessage.NON_CANCELABLE_ORDER,
+            details=f'Order cancellation is not available for {order.order_status} order'
+        ).response
+    order.order_status = Order.STATUS.CANCELED
+    order.product.in_stock += order.product_quantity
+    order.product.sell_count -= order.product_quantity
+    order.product.seller.total_sale -= order.product_quantity
+    order.product.seller.save()
+    order.canceled_at = datetime.datetime.now().astimezone()
+    order.product.save()
+    order.save()
+
     return Response(OrderSerializer(order, many=False).data)
 
 

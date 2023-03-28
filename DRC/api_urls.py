@@ -34,6 +34,8 @@ urlpatterns = [
     # Orders
     path('user/orders/', transactions_api_views.all_orders),
     path('user/order/<str:order_id>/', transactions_api_views.order_by_id),
+    path('user/order/<str:order_id>/cancel/', transactions_api_views.cancel_order_by_id),
+    path('user/transaction/<str:transaction_id>/', transactions_api_views.transaction_by_id),
     path('user/transaction/<str:transaction_id>/', transactions_api_views.transaction_by_id),
 
     # Checkout
