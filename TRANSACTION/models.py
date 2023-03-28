@@ -61,9 +61,6 @@ class Transaction(models.Model):
 
     amount = models.FloatField(default=0, blank=False, null=False)
 
-    shipping_address = models.TextField(default='{}')
-    billing_address = models.TextField(default='{}')
-
     created_at = models.DateTimeField(auto_now_add=True)
     success_at = models.DateTimeField(blank=True, null=True)
     refund_at = models.DateTimeField(blank=True, null=True)
@@ -147,6 +144,9 @@ class Order(models.Model):
     order_status = models.CharField(max_length=4, blank=False, null=False,
                                     choices=__ORDER_STATUS_CHOICES, default='PFP')
     track_update = models.TextField(null=True, blank=True)
+
+    shipping_address = models.TextField(default='{}')
+    billing_address = models.TextField(default='{}')
 
     created_at = models.DateTimeField(auto_now_add=True)
     last_updated_at = models.DateTimeField(auto_now=True)

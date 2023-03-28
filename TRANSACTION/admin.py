@@ -6,7 +6,7 @@ from .models import Transaction, Order
 class TransactionAdmin(admin.ModelAdmin):
     list_display = (
         'reference_id', 'payment_method', 'payment_info',
-        'payment_status', 'shipping_address',
+        'payment_status',
     )
 
     search_fields = [
@@ -18,7 +18,8 @@ class TransactionAdmin(admin.ModelAdmin):
 class OrderAdmin(admin.ModelAdmin):
     list_display = (
         'order_id', 'product', 'product_quantity', 'created_at',
-        'placed_at', 'order_status', 'refund_transaction', 'buyer'
+        'placed_at', 'order_status', 'refund_transaction', 'buyer',
+        'shipping_address',
     )
 
     search_fields = [

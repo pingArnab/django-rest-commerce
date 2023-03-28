@@ -133,8 +133,6 @@ def checkout_pre_process(request):
         Cart.total_discount_by_username(username=user.username)
         new_transaction = Transaction.objects.create(
             amount=total_price-total_discount+total_delivery_charge,
-            shipping_address=shipping_address.getAddressJson(),
-            billing_address=billing_address.getAddressJson(),
             payment_method=payment_method
         )
         new_transaction.save()
@@ -148,6 +146,8 @@ def checkout_pre_process(request):
                 actual_price=cart.product.get_price().get('actual_price'),
                 discount=cart.product.get_price().get('discount'),
                 delivery_charge=cart.product.delivery_charge,
+                shipping_address=shipping_address.getAddressJson(),
+                billing_address=billing_address.getAddressJson(),
             )
             new_order.save()
             new_order_list.append(new_order.order_id)

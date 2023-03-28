@@ -13,8 +13,8 @@ class OrderSerializer(serializers.ModelSerializer):
         fields = (
             'order_id', 'sold_price', 'discount', 'order_status',
             'product', 'delivery_charge',
-            'track_update', 'created_at', 'delivered_at', 'refund_at',
-            'billing_address', 'shipping_address'
+            'track_update', 'created_at', 'delivered_at', 'returned_at',
+            'canceled_at', 'billing_address', 'shipping_address'
         )
 
     @staticmethod

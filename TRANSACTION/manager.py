@@ -58,10 +58,10 @@ def getSellerOrdersDict(seller, status=''):
         ]
     order = Order.objects.values(
         'order_id', 'product__product_name', 'product__product_id',
-        'product__primary_image', 'product_quantity', 'transaction__shipping_address',
+        'product__primary_image', 'product_quantity', 'shipping_address',
         'actual_price', 'discount', 'product_quantity',
         'order_status', 'placed_at', 'last_updated_at',
-        'shipped_at', 'delivered_at', 'refund_at'
+        'shipped_at', 'delivered_at', 'returned_at', 'canceled_at'
     ).filter(
         order_status__in=order_status,
         product__seller__user_id=seller.id
@@ -152,9 +152,9 @@ def get_seller_sales_stat(seller):
 def getUserOrdersDict(user, filters=None):
     order = Order.objects.values(
         'order_id', 'seller', 'product__product_name', 'product__product_id',
-        'product__primary_image', 'product_quantity', 'sold_price', 'transaction__shipping_address',
+        'product__primary_image', 'product_quantity', 'sold_price', 'shipping_address',
         'order_status', 'placed_at', 'last_updated_at', 'transaction', 'transaction__reference_id',
-        'shipped_at', 'delivered_at', 'refund_at'
+        'shipped_at', 'delivered_at', 'returned_at', 'canceled_at'
     ).filter(
         buyer__user=user,
         # order_status__in=filters
@@ -165,9 +165,9 @@ def getUserOrdersDict(user, filters=None):
 def getTransactionOrdersDict(transaction):
     order = Order.objects.values(
         'order_id', 'buyer', 'product',
-        'product_quantity', 'sold_price', 'transaction__shipping_address',
+        'product_quantity', 'sold_price', 'shipping_address',
         'order_status', 'placed_at', 'last_updated_at',
-        'shipped_at', 'delivered_at', 'refund_at'
+        'shipped_at', 'delivered_at', 'returned_at', 'canceled_at'
     ).filter(
         transaction=transaction,
     ).order_by('-created_at')
