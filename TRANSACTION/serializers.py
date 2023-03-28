@@ -19,11 +19,11 @@ class OrderSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_billing_address(order: Order):
-        return order.transaction.get_billing_address()
+        return order.get_billing_address()
 
     @staticmethod
     def get_shipping_address(order: Order):
-        return order.transaction.get_shipping_address()
+        return order.get_shipping_address()
 
     @staticmethod
     def get_sold_price(order: Order):

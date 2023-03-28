@@ -93,14 +93,6 @@ class Transaction(models.Model):
         transaction.save()
         return transaction
 
-    def get_shipping_address(self):
-        address = self.shipping_address
-        return json.loads(address)
-
-    def get_billing_address(self):
-        address = self.billing_address
-        return json.loads(address)
-
     def __str__(self):
         return '{}'.format(self.reference_id)
 
@@ -177,5 +169,13 @@ class Order(models.Model):
     def get_final_price_wih_shipping(self):
         return self.get_final_price() + self.delivery_charge
 
+    def get_shipping_address(self):
+        address = self.shipping_address
+        return json.loads(address)
+
+    def get_billing_address(self):
+        address = self.billing_address
+        return json.loads(address)
+    
     def __str__(self):
         return '{}'.format(self.order_id)
