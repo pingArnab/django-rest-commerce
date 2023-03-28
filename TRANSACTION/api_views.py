@@ -175,6 +175,9 @@ def checkout_confirmation(request):
 
         if out_of_stock_products:
             logger.warning(f'{FUNCTION_NAME} -> Following products are out of stock: {out_of_stock_products.__str__()}')
+            for order in transaction.order_set.all():
+                user.userprofile.add(order.product)
+            transaction.delete()
             return ErrorResponse(
                 code=400,
                 msg='Products are out of stock',
