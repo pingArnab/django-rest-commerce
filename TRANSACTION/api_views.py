@@ -68,13 +68,21 @@ def cancel_order_by_id(request, order_id: str):
             msg=ErrorMessage.NON_CANCELABLE_ORDER,
             details=f'Order cancellation is not available for {order.order_status} order'
         ).response
+
     order.order_status = Order.STATUS.CANCELED
+
     order.product.in_stock += order.product_quantity
     order.product.sell_count -= order.product_quantity
+    order.product.save()
+
     order.product.seller.total_sale -= order.product_quantity
     order.product.seller.save()
+
+    for category in order.product.category.all():
+        category.sell_count -= order.product_quantity
+        category.save()
+
     order.canceled_at = datetime.datetime.now().astimezone()
-    order.product.save()
     order.save()
 
     return Response(OrderSerializer(order, many=False).data)
@@ -214,13 +222,21 @@ def checkout_confirmation(request):
 
         for order in transaction.order_set.all():
             order.order_status = Order.STATUS.PLACED
+
             order.product.in_stock -= order.product_quantity
             order.product.sell_count += order.product_quantity
+            order.product.save()
+
             order.product.seller.total_sale += order.product_quantity
             order.product.seller.save()
+
+            for category in order.product.category.all():
+                category.sell_count += order.product_quantity
+                category.save()
+
             order.placed_at = datetime.datetime.now().astimezone()
-            order.product.save()
             order.save()
+
         transaction.save()
     else:
         return ErrorResponse(code=400, msg='Invalid payment methode').response
