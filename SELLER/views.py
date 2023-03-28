@@ -378,7 +378,7 @@ def cancel_order(request):
 
                 msg = Message.objects.create(
                     title=f'Order Canceled: {order_id}',
-                    body=f'Order Canceled by seller with below comment: \n {seller_comment}',
+                    body=f'An order canceled by Seller with below comment: \n{seller_comment if seller_comment else ""}',
                     receiver=order.buyer,
                     sender=request.user,
                 )

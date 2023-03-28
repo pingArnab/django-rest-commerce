@@ -11,6 +11,7 @@ from DRC.core.permissions import UserOnly
 from django.contrib.auth.models import User as AuthUser
 
 from DRC.settings import PROJECT_NAME
+from MESSAGE.models import Message
 from TRANSACTION.models import Transaction
 from USER.models import Cart, UserAddress
 from .models import Order
@@ -58,7 +59,7 @@ def order_by_id(request, order_id: str):
 def cancel_order_by_id(request, order_id: str):
     FUNCTION_NAME = 'cancel_order_by_id'
     user: AuthUser = request.user
-    request.data.get('reason').strip()
+    reason = request.data.get('reason').strip()
     if not Order.objects.filter(buyer_id=user.id, order_id=order_id):
         return ErrorResponse(code=ErrorCode.INVALID_ORDER_ID, msg=ErrorMessage.INVALID_ORDER_ID).response
     order = Order.objects.get(buyer_id=user.id, order_id=order_id)
@@ -84,6 +85,14 @@ def cancel_order_by_id(request, order_id: str):
 
     order.canceled_at = datetime.datetime.now().astimezone()
     order.save()
+
+    msg = Message.objects.create(
+        title=f'Order Canceled: {order.order_id}',
+        body=f'An order canceled by user: \"{user.get_full_name()}<{user.username}>\" for below reason: \n{reason}',
+        receiver=order.buyer,
+        sender=user,
+    )
+    msg.save()
 
     return Response(OrderSerializer(order, many=False).data)
 

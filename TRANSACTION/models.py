@@ -109,7 +109,6 @@ class Order(models.Model):
         ('RTN', 'Returned'),
         ('CNL', 'Canceled'),
     ]
-    NON_CANCELABLE_LIST = ['CNL', 'DLV', 'RTN']
 
     class STATUS:
         PENDING_FOR_PAYMENT = 'PFP'
@@ -121,6 +120,15 @@ class Order(models.Model):
         REQUESTED_FOR_REFUND = 'RFR'
         RETURNED = 'RTN'
         CANCELED = 'CNL'
+
+    # Non-cancelable order type list
+    NON_CANCELABLE_LIST = [
+        STATUS.CANCELED,
+        STATUS.OUT_FOR_DELIVERY,
+        STATUS.DELIVERED,
+        STATUS.RETURNED,
+        STATUS.PENDING_FOR_PAYMENT
+    ]
 
     order_id = models.CharField(primary_key=True, max_length=30, default=generateOrderRefId, editable=False)
 

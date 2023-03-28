@@ -83,11 +83,11 @@ class TransactionSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_billing_address(transaction: Transaction):
-        return transaction.get_billing_address()
+        return transaction.order_set.first().get_billing_address()
 
     @staticmethod
     def get_shipping_address(transaction: Transaction):
-        return transaction.get_shipping_address()
+        return transaction.order_set.first().get_shipping_address()
 
     @staticmethod
     def get_orders(transaction: Transaction):
