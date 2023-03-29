@@ -30,9 +30,9 @@ class StandardResultsSetPagination(pagination.PageNumberPagination):
 @permission_classes([IsAuthenticated, UserOnly])
 def all_msg_by_user(request, status=None):
     msgs = Message.objects.filter(receiver=request.user).order_by('timestamp')
-    if request.GET.get('status') == 'unread':
+    if status == 'unread':
         msgs = msgs.filter(read_status=False)
-    elif request.GET.get('status') == 'read':
+    elif status == 'read':
         msgs = msgs.filter(read_status=True)
 
     if request.GET.get('page_size'):
