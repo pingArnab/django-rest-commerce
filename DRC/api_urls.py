@@ -26,6 +26,11 @@ urlpatterns = [
     path('user/cart/add-bulk/', user_api_views.add_all_user_cart),
     path('user/cart/', user_api_views.user_cart),
     path('user/cart/<str:product_id>/', user_api_views.user_cart),
+    # User Message
+    path('user/msgs/', message_api_views.all_msg_by_user),
+    path('user/msgs/<str:status>/', message_api_views.all_msg_by_user),
+    path('user/msg/<str:msg_id>/', message_api_views.msg_by_id),
+    path('user/msg/<str:msg_id>/mark-as-read/', message_api_views.mark_msg_as_read),
 
     # Password
     path('user/password/', user_api_views.change_password),
@@ -58,10 +63,5 @@ urlpatterns = [
 
     path('search/', product_api_views.search),
     path('search-suggestion/', product_api_views.search_suggestion),
-
-    path('msg/', message_api_views.all_msg_by_user),
-    path('msg/unread/', message_api_views.all_msg_by_user),
-    path('msg/<str:msg_id>/', message_api_views.msg_by_id),
-    path('msg/<str:msg_id>/mark-as-read/', message_api_views.mark_msg_as_read),
 
 ]

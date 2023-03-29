@@ -28,12 +28,13 @@ class StandardResultsSetPagination(pagination.PageNumberPagination):
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated, UserOnly])
-def all_msg_by_user(request):
+def all_msg_by_user(request, status=None):
     msgs = Message.objects.filter(receiver=request.user).order_by('timestamp')
     if request.GET.get('status') == 'unread':
         msgs = msgs.filter(read_status=False)
     elif request.GET.get('status') == 'read':
         msgs = msgs.filter(read_status=True)
+
     if request.GET.get('page_size'):
         paginator = pagination.PageNumberPagination()
         paginator.page_size = request.query_params.get('page_size')
