@@ -8,6 +8,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User as AuthUser
 
+from . import util
 from MESSAGE.models import Message
 from TRANSACTION import manager as transaction_manager
 from PRODUCT.models import Product, Category
@@ -22,13 +23,15 @@ logger = logging.getLogger(__module_name)
 # Create your views here.
 @login_required(login_url='/login')
 def get_seller_dashboard(request):
+    context = util.get_seller_context(request.user)
+
     order = transaction_manager.getSellerOrdersDict(request.user, 'UPDATES')
     order_list = list(order)[:100]
 
     new_order_stat, all_order_stat = transaction_manager.get_seller_order_stat(request.user)
     customer_stat = transaction_manager.get_seller_customer_stat(request.user)
     sales_stat = transaction_manager.get_seller_sales_stat(request.user)
-    context = {
+    context.update({
         'order_list': order_list,
         'cards': {
             'new_order_stat': new_order_stat,
@@ -36,7 +39,7 @@ def get_seller_dashboard(request):
             'sales': sales_stat,
             'customer': customer_stat
         }
-    }
+    })
     logger.debug(f"Seller Cards: {context.get('cards')}")
     # print(f"Seller Cards: {context.get('cards')}")
     # print(f"__module_name: {__module_name}")
@@ -45,6 +48,8 @@ def get_seller_dashboard(request):
 
 @login_required(login_url='/login')
 def getSellerProductsPage(request):
+    context = util.get_seller_context(request.user)
+
     redirect_url = AccessLevel.checkAccess(request.user, allowed_access_level=AccessLevel.SELLER)
     if redirect_url:
         return redirect_url
@@ -54,14 +59,14 @@ def getSellerProductsPage(request):
         'sell_count', 'last_modified',
     ).all()
     # order_list = list(order)[:100]
-    context = {
-        'products': products.order_by('-last_modified'),
-    }
+    context['products'] = products.order_by('-last_modified')
     return render(request, 'SELLER/products-page.html', context)
 
 
 @login_required(login_url='/login')
 def get_order_view(request, status: str, limit=None):
+    context = util.get_seller_context(request.user)
+
     redirect_url = AccessLevel.checkAccess(request.user, allowed_access_level=AccessLevel.SELLER)
     if redirect_url:
         return redirect_url
@@ -70,11 +75,11 @@ def get_order_view(request, status: str, limit=None):
         order_list = transaction_manager.getSellerOrdersDict(request.user, status)[:limit]
     else:
         order_list = transaction_manager.getSellerOrdersDict(request.user, status)
-    context = {
+    context.update({
         'no_cancel_order_list': Order.NON_CANCELABLE_LIST,
         'order_list': order_list,
         'key': status,
-    }
+    })
     logger.debug('::{} : {}'.format(__name__, order_list))
     return render(request, 'SELLER/orders-page.html', context)
 
@@ -126,12 +131,17 @@ def unmark_order_ready_to_ship(request):
 @login_required(login_url='/login')
 def add_product(request):
     FUNCTION_NAME = 'add_product'
+    context = util.get_seller_context(request.user)
     redirect_url = AccessLevel.checkAccess(request.user, allowed_access_level=AccessLevel.SELLER)
     if redirect_url:
         return redirect_url
-    context = {
-        'categories': Category.objects.all()
-    }
+    context['categories'] = Category.objects.all()
+
+    user: AuthUser = request.user
+    unread_count = msg_list = Message.objects.filter(
+        receiver=user, read_status=False
+    ).count()
+    context['unread_count'] = unread_count
     if request.method == 'POST':
         product = None
         try:
@@ -223,6 +233,7 @@ def add_product(request):
 
 @login_required(login_url='/login')
 def edit_product(request, product_id):
+    context = util.get_seller_context(request.user)
     FUNCTION_NAME = 'edit_product'
     redirect_url = AccessLevel.checkAccess(request.user, allowed_access_level=AccessLevel.SELLER)
     if redirect_url:
@@ -310,9 +321,8 @@ def edit_product(request, product_id):
         product.save()
         messages.success(request, 'Product Updated Successfully: ' + product.product_id)
         return redirect('SELLER:all-products')
-    context = {
-        'categories': Category.objects.all()
-    }
+    context['categories'] = Category.objects.all()
+
     # filesystem = FileSystemStorage()
     if Product.objects.filter(product_id=product_id):
         product = Product.objects.get(product_id=product_id)
@@ -349,18 +359,20 @@ def delete_product(request, product_id):
 @login_required(login_url='/login')
 def get_all_message(request):
     user: AuthUser = request.user
+    context = util.get_seller_context(request.user)
+
     msg_list = Message.objects.filter(
         receiver=user
     ).order_by('-timestamp')
-    context = {
-        'messages_list': msg_list
-    }
+    context['messages_list'] = msg_list
     return render(request, 'SELLER/inbox.html', context)
 
 
 @login_required(login_url='/login')
 def get_message_by_id(request, message_id: str):
     FUNCTION_NAME = 'get_message_by_id()'
+    context = {}
+
     user: AuthUser = request.user
     if not Message.objects.filter(message_id=message_id, receiver=user):
         logger.error(f'{FUNCTION_NAME}-> Message not exists {message_id}')
@@ -368,33 +380,13 @@ def get_message_by_id(request, message_id: str):
         raise Http404(f'Message not exists! {message_id}')
     msg = Message.objects.get(message_id=message_id, receiver=user)
     if not msg.read_status:
-        logger.debug(f'{FUNCTION_NAME} -> Seller: {user.get_full_name()}<{user.username}> is reading the message: {message_id}')
+        logger.debug(
+            f'{FUNCTION_NAME} -> Seller: {user.get_full_name()}<{user.username}> is reading the message: {message_id}')
         msg.read_status = True
         msg.save()
-    context = {
-        'message': msg
-    }
+    context['message'] = msg
+    context.update(util.get_seller_context(user))
     return render(request, 'SELLER/message.html', context)
-
-
-# ------------------------   -----------------------------------
-# ------------------------   -----------------------------------
-# ------------------------API-----------------------------------
-# ------------------------   -----------------------------------
-# ------------------------   -----------------------------------
-def getOrderData(request, status: str, limit=None):
-    try:
-        order = transaction_manager.getSellerOrdersDict(request.user, status)
-        if limit and (type(limit) is int):
-            order_list = list(order)[:limit]
-        else:
-            order_list = list(order)
-        logger.debug('getOrderData : {}'.format(order_list))
-
-        return JsonResponse({'order': order_list})
-    except Exception as ex:
-        logger.exception('getOrderData : {}'.format(ex))
-        return JsonResponse({'status': 400})
 
 
 def cancel_order(request):
@@ -417,8 +409,8 @@ def cancel_order(request):
                 msg = Message.objects.create(
                     title=f'Order Canceled: {order_id}',
                     body=f'An order canceled by Seller with below comment: \n{seller_comment if seller_comment else ""}',
-                    receiver=request.user,
-                    sender=order.buyer,
+                    receiver=order.buyer,
+                    sender=request.user,
                 )
                 msg.save()
                 order.save()
@@ -430,3 +422,23 @@ def cancel_order(request):
         return redirect(return_to)
     else:
         raise Http404
+
+# ------------------------   -----------------------------------
+# ------------------------   -----------------------------------
+# ------------------------API-----------------------------------
+# ------------------------   -----------------------------------
+# ------------------------   -----------------------------------
+def getOrderData(request, status: str, limit=None):
+    try:
+        order = transaction_manager.getSellerOrdersDict(request.user, status)
+        if limit and (type(limit) is int):
+            order_list = list(order)[:limit]
+        else:
+            order_list = list(order)
+        logger.debug('getOrderData : {}'.format(order_list))
+
+        return JsonResponse({'order': order_list})
+    except Exception as ex:
+        logger.exception('getOrderData : {}'.format(ex))
+        return JsonResponse({'status': 400})
+

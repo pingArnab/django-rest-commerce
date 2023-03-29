@@ -8,10 +8,12 @@
     </div>
     <ul class="list-unstyled components">
         <p>MENUS</p>
-        <li><a class="nav-link" href="{% url 'SELLER:dashboard' %}"> <i data-feather="sliders"></i> Dashboard </a></li>
+        <li><a href="{% url 'SELLER:dashboard' %}" class="nav-link d-flex align-items-center" style="gap: 0.4rem">
+            <i data-feather="sliders"></i> Dashboard </a>
+        </li>
 
         <li>
-            <a href="#product-menu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+            <a href="#product-menu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle d-flex align-items-center" style="gap: 0.4rem">
                 <i data-feather="package"></i> Products
             </a>
             <ul class="collapse list-unstyled" id="product-menu">
@@ -21,7 +23,7 @@
         </li>
 
         <li>
-            <a href="#order-link" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+            <a href="#order-link" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle d-flex align-items-center" style="gap: 0.4rem">
                 <i data-feather="list"></i> Manage Orders
             </a>
             <ul class="collapse list-unstyled" id="order-link">
@@ -31,7 +33,12 @@
                 <li><a class="nav-link" href="{% url 'SELLER:orders' 'delivered' %}">Delivered Order</a></li>
             </ul>
         </li>
-        <li><a class="nav-link" href="{% url 'SELLER:all-message' %}"> <i data-feather="mail"></i> Message </a></li>
+        <li>
+            <a href="{% url 'SELLER:all-message' %}" class="nav-link  d-flex align-items-center" style="gap: 0.4rem">
+                <i data-feather="mail"></i> Notification
+                {% if unread_message_count %}<span class="badge badge-light">{{ unread_message_count }}</span>{% endif %}
+            </a>
+        </li>
 
     </ul>
     <ul class="list-unstyled CTAs user-container">
@@ -59,50 +66,3 @@
         });
     });
 </script>
-
-
-<!-- Side Navigation section start --
-<div id="layoutSidenav_nav">
-    <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
-        <div class="sb-sidenav-menu">
-            <div class="nav">
-                <div class="sb-sidenav-menu-heading">Core</div>
-                <a class="nav-link" href="{% url 'SELLER:dashboard' %}">
-                    <div class="sb-nav-link-icon"><i data-feather="sliders"></i></div>
-                    Dashboard
-                </a>
-                <div class="sb-sidenav-menu-heading">Interface</div>
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
-                    <div class="sb-nav-link-icon"><i data-feather="package"></i></div>
-                    Products
-                    <div class="sb-sidenav-collapse-arrow"><i data-feather="chevron-down"></i></div>
-                </a>
-                <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-parent="#sidenavAccordion">
-                    <nav class="sb-sidenav-menu-nested nav">
-                        <a class="nav-link" href="{% url 'SELLER:all-products' %}">All Products</a>
-                        <a class="nav-link" href="{% url 'SELLER:add-product' %}">Add new products</a>
-                    </nav>
-                </div>
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
-                    <div class="sb-nav-link-icon"><i data-feather="list"></i></div>
-                    Manage Orders
-                    <div class="sb-sidenav-collapse-arrow"><i data-feather="chevron-down"></i></div>
-                </a>
-                <div class="collapse" id="collapsePages" aria-labelledby="headingTwo" data-parent="#sidenavAccordion">
-                    <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
-                        <a class="nav-link collapsed" href="{% url 'SELLER:orders' 'all' %}">All Orders</a>
-                        <a class="nav-link" href="{% url 'SELLER:orders' 'new' %}">New Order</a>
-                        <a class="nav-link" href="{% url 'SELLER:orders' 'ongoing' %}">Ongoing Order</a>
-                        <a class="nav-link" href="{% url 'SELLER:orders' 'delivered' %}">Delivered Order</a>
-
-                    </nav>
-                </div>
-            </div>
-        </div>
-        <div class="sb-sidenav-footer">
-            <div class="small">Logged in as:</div>
-            {{ user.get_full_name }}
-        </div>
-    </nav>
-</div>
--- Side Navigation section end -->

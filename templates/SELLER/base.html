@@ -21,7 +21,7 @@
     <body>
 
         <div class="wrapper">
-            {% include 'SELLER/includes/seller-side-nav.html' %}
+            {% include 'SELLER/includes/seller-side-nav.html' with unread_message_count=unread_message_count %}
 
             <div class="content">
 {#                {% include 'SELLER/includes/seller-nav.html' %}#}

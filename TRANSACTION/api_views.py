@@ -17,7 +17,6 @@ from USER.models import Cart, UserAddress
 from .models import Order
 from .serializers import OrderSerializer, TransactionSerializer
 
-
 __module_name = f'{PROJECT_NAME}.' + __name__ + '::'
 logger = logging.getLogger(__module_name)
 
@@ -54,6 +53,7 @@ def order_by_id(request, order_id: str):
         return ErrorResponse(code=ErrorCode.Expired_ORDER, msg=ErrorMessage.Expired_ORDER).response
     return Response(OrderSerializer(order, many=False).data)
 
+
 @api_view(['POST'])
 @permission_classes([IsAuthenticated, UserOnly])
 def cancel_order_by_id(request, order_id: str):
@@ -89,7 +89,7 @@ def cancel_order_by_id(request, order_id: str):
     msg = Message.objects.create(
         title=f'Order Canceled: {order.order_id}',
         body=f'An order canceled by user: \"{user.get_full_name()}<{user.username}>\" for below reason: \n{reason}',
-        receiver=order.buyer,
+        receiver=order.product.seller.user,
         sender=user,
     )
     msg.save()
@@ -149,7 +149,7 @@ def checkout_pre_process(request):
 
         Cart.total_discount_by_username(username=user.username)
         new_transaction = Transaction.objects.create(
-            amount=total_price-total_discount+total_delivery_charge,
+            amount=total_price - total_discount + total_delivery_charge,
             payment_method=payment_method
         )
         new_transaction.save()
