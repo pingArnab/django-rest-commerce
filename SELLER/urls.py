@@ -18,4 +18,6 @@ urlpatterns = [
     path('api/orders/<str:status>/<int:limit>/', views.getOrderData),
     path('orders/<str:status>/', views.get_order_view, name='orders'),
     path('orders/<str:status>/<int:limit>/', views.get_order_view, name='orders-limit'),
+    path('message/', views.get_all_message, name='all-message'),
+    path('message/<str:message_id>/', views.get_message_by_id, name='message-by-id'),
 ]

@@ -6,7 +6,7 @@ from django.db.utils import IntegrityError
 from django.http import Http404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.urls import reverse
+from django.contrib.auth.models import User as AuthUser
 
 from MESSAGE.models import Message
 from TRANSACTION import manager as transaction_manager
@@ -43,6 +43,7 @@ def get_seller_dashboard(request):
     return render(request, 'SELLER/dashboard.html', context)
 
 
+@login_required(login_url='/login')
 def getSellerProductsPage(request):
     redirect_url = AccessLevel.checkAccess(request.user, allowed_access_level=AccessLevel.SELLER)
     if redirect_url:
@@ -59,6 +60,7 @@ def getSellerProductsPage(request):
     return render(request, 'SELLER/products-page.html', context)
 
 
+@login_required(login_url='/login')
 def get_order_view(request, status: str, limit=None):
     redirect_url = AccessLevel.checkAccess(request.user, allowed_access_level=AccessLevel.SELLER)
     if redirect_url:
@@ -77,6 +79,7 @@ def get_order_view(request, status: str, limit=None):
     return render(request, 'SELLER/orders-page.html', context)
 
 
+@login_required(login_url='/login')
 def mark_order_ready_to_ship(request):
     redirect_url = AccessLevel.checkAccess(request.user, allowed_access_level=AccessLevel.SELLER)
     if redirect_url:
@@ -98,6 +101,7 @@ def mark_order_ready_to_ship(request):
         raise Http404
 
 
+@login_required(login_url='/login')
 def unmark_order_ready_to_ship(request):
     redirect_url = AccessLevel.checkAccess(request.user, allowed_access_level=AccessLevel.SELLER)
     if redirect_url:
@@ -119,6 +123,7 @@ def unmark_order_ready_to_ship(request):
         raise Http404
 
 
+@login_required(login_url='/login')
 def add_product(request):
     FUNCTION_NAME = 'add_product'
     redirect_url = AccessLevel.checkAccess(request.user, allowed_access_level=AccessLevel.SELLER)
@@ -216,6 +221,7 @@ def add_product(request):
     return render(request, 'SELLER/add-product.html', context)
 
 
+@login_required(login_url='/login')
 def edit_product(request, product_id):
     FUNCTION_NAME = 'edit_product'
     redirect_url = AccessLevel.checkAccess(request.user, allowed_access_level=AccessLevel.SELLER)
@@ -316,6 +322,7 @@ def edit_product(request, product_id):
     raise Http404
 
 
+@login_required(login_url='/login')
 def delete_product(request, product_id):
     FUNCTION_NAME = 'delete_product'
     redirect_url = AccessLevel.checkAccess(request.user, allowed_access_level=AccessLevel.SELLER)
@@ -337,6 +344,37 @@ def delete_product(request, product_id):
     product.delete()
     messages.success(request, 'Product has been deleted with product id: ' + product_id)
     return redirect('SELLER:all-products')
+
+
+@login_required(login_url='/login')
+def get_all_message(request):
+    user: AuthUser = request.user
+    msg_list = Message.objects.filter(
+        receiver=user
+    ).order_by('-timestamp')
+    context = {
+        'messages_list': msg_list
+    }
+    return render(request, 'SELLER/inbox.html', context)
+
+
+@login_required(login_url='/login')
+def get_message_by_id(request, message_id: str):
+    FUNCTION_NAME = 'get_message_by_id()'
+    user: AuthUser = request.user
+    if not Message.objects.filter(message_id=message_id, receiver=user):
+        logger.error(f'{FUNCTION_NAME}-> Message not exists {message_id}')
+        messages.error(request, f'Message not found with message id: {message_id}')
+        raise Http404(f'Message not exists! {message_id}')
+    msg = Message.objects.get(message_id=message_id, receiver=user)
+    if not msg.read_status:
+        logger.debug(f'{FUNCTION_NAME} -> Seller: {user.get_full_name()}<{user.username}> is reading the message: {message_id}')
+        msg.read_status = True
+        msg.save()
+    context = {
+        'message': msg
+    }
+    return render(request, 'SELLER/message.html', context)
 
 
 # ------------------------   -----------------------------------
@@ -379,8 +417,8 @@ def cancel_order(request):
                 msg = Message.objects.create(
                     title=f'Order Canceled: {order_id}',
                     body=f'An order canceled by Seller with below comment: \n{seller_comment if seller_comment else ""}',
-                    receiver=order.buyer,
-                    sender=request.user,
+                    receiver=request.user,
+                    sender=order.buyer,
                 )
                 msg.save()
                 order.save()

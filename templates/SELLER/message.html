@@ -1,0 +1,44 @@
+{% extends 'SELLER/base.html' %}
+{% load static %}
+{% load custom_tag %}
+
+{% block head_content %}
+
+{% endblock head_content %}
+
+{% block body_content %}
+{#    <div class="jumbotron">#}
+{#        <h6 class="display-6">[ Id: {{ message.message_id }} ]</h6>#}
+{#        <h2 class="display-5 breadcrumb">{{ message.title }}</h2>#}
+{#        <p class="lead">{{ message.body | linebreaks }}</p>#}
+{#        <hr class="my-4">#}
+{#        <p>#}
+{#            From: <span class="font-weight-bold">#}
+{#                {{ message.sender.get_full_name }} < {{ message.sender.email }} >#}
+{#            </span><br>#}
+{#            <span class="font-weight-bold font-italic">{{ message.timestamp }}</span>#}
+{#        </p>#}
+{#        <a class="btn btn-secondary" href="{% url 'SELLER:all-message' %}" role="button">Close</a>#}
+{#    </div>#}
+
+    <div class="card text-center">
+        <div class="card-header">
+            [ Id: {{ message.message_id }} ]
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">{{ message.title }}</h5>
+            <p class="card-text">{{ message.body | linebreaks }}</p>
+            <a href="{% url 'SELLER:all-message' %}" class="btn btn-outline-secondary">Close</a>
+        </div>
+        <div class="card-footer text-muted">
+            From: <span class="font-weight-bold">
+                {{ message.sender.get_full_name }} < {{ message.sender.email }} >
+            </span><br>
+            <span class="font-weight-bold font-italic">{{ message.timestamp }}</span>
+        </div>
+    </div>
+{% endblock body_content %}
+
+{% block body_end_content %}
+
+{% endblock body_end_content %}
