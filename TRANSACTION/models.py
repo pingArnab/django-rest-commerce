@@ -147,6 +147,8 @@ class Order(models.Model):
     actual_price = models.FloatField(default=0)
     discount = models.FloatField(default=0)
     delivery_charge = models.FloatField(default=0)
+    price = models.FloatField(default=0, editable=False)
+    price_delivery = models.FloatField(default=0, editable=False)
 
     order_status = models.CharField(max_length=4, blank=False, null=False,
                                     choices=__ORDER_STATUS_CHOICES, default='PFP')
@@ -177,6 +179,11 @@ class Order(models.Model):
         )
         order.save()
         return order
+
+    def save(self, *args, **kwargs):
+        self.price = self.actual_price - self.discount
+        self.price_delivery = self.actual_price - self.discount + self.delivery_charge
+        super(Order, self).save(*args, **kwargs)
 
     def get_final_price(self):
         return (self.actual_price - self.discount) * self.product_quantity

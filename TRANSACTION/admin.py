@@ -17,9 +17,8 @@ class TransactionAdmin(admin.ModelAdmin):
 
 class OrderAdmin(admin.ModelAdmin):
     list_display = (
-        'order_id', 'product', 'product_quantity', 'created_at',
-        'placed_at', 'order_status', 'refund_transaction', 'buyer',
-        'shipping_address',
+        'order_id', 'product', 'product_quantity', 'price', 'price_delivery',
+        'buyer', 'created_at', 'placed_at', 'order_status',
     )
 
     search_fields = [
