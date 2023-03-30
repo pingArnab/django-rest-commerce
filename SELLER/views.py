@@ -1,5 +1,7 @@
 import datetime
 import logging
+
+from django.db.models import Sum, F
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.db.utils import IntegrityError
@@ -9,10 +11,11 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User as AuthUser
 
 from . import util
+from .models import Seller
 from MESSAGE.models import Message
 from TRANSACTION import manager as transaction_manager
 from PRODUCT.models import Product, Category
-from DRC.core.DRCCommonUtil import AccessLevel, CTfiles
+from DRC.core.DRCCommonUtil import AccessLevel, CTfiles, MONTH
 from TRANSACTION.models import Order
 from DRC.settings import PROJECT_NAME
 
@@ -423,12 +426,15 @@ def cancel_order(request):
     else:
         raise Http404
 
+
 # ------------------------   -----------------------------------
 # ------------------------   -----------------------------------
 # ------------------------API-----------------------------------
 # ------------------------   -----------------------------------
 # ------------------------   -----------------------------------
 def getOrderData(request, status: str, limit=None):
+    if not (request.user.is_authenticated and Seller.objects.filter(user=request.user)):
+        return JsonResponse({'msg': "Unauthorised"}, status=401)
     try:
         order = transaction_manager.getSellerOrdersDict(request.user, status)
         if limit and (type(limit) is int):
@@ -442,3 +448,57 @@ def getOrderData(request, status: str, limit=None):
         logger.exception('getOrderData : {}'.format(ex))
         return JsonResponse({'status': 400})
 
+
+def get_yearly_sales_stats(request, sales_type: str, sales_range=0):
+    FUNCTION_NAME = 'get_yearly_sales_stats'
+    if not (request.user.is_authenticated and Seller.objects.filter(user=request.user)):
+        return JsonResponse({'msg': "Unauthorised"}, status=401)
+    try:
+        if sales_type.lower() == 'year':
+            year = sales_range or datetime.date.today().year
+            desc = f'Sales for year: {year}'
+            monthly_sales_report = Order.objects.filter(
+                product__seller__user_id=request.user.id, placed_at__year=year,
+                order_status__in=Order.POSITIVE_ORDER_STATUS
+            ).values('placed_at__month').annotate(total_sale=Sum(F('actual_price') - F('discount')))
+            monthly_sales_amount = []
+            sales_month = []
+            for sales in monthly_sales_report:
+                monthly_sales_amount.append(sales.get('total_sale'))
+                sales_month.append(MONTH.get_name(sales.get('placed_at__month')))
+            if monthly_sales_amount and sales_month:
+                monthly_sales_data = {'desc': desc, 'months': sales_month, 'amount': monthly_sales_amount}
+            else:
+                logger.exception(f'{FUNCTION_NAME} -> : monthly_sales_report for {year} = {monthly_sales_report}')
+                return JsonResponse({'msg': f'No sales data found for year: {year}'}, status=404)
+            logger.debug(f'{FUNCTION_NAME} -> monthly_sales_report = {monthly_sales_report}')
+            return JsonResponse(monthly_sales_data)
+        if sales_type.lower() == 'month':
+            if sales_range not in range(1, 13):
+                return JsonResponse({'msg': 'Invalid Request: month must be in range of 1 to 12'}, status=400)
+            month = int(sales_range) or datetime.date.today().month
+            year = datetime.date.today().year
+            desc = f'Sales for {MONTH.get_short_name(month).upper()}-{year}'
+            monthly_sales_report = Order.objects.filter(
+                product__seller__user_id=request.user.id,
+                placed_at__month=month, placed_at__year=year,
+                order_status__in=Order.POSITIVE_ORDER_STATUS
+            ).values('placed_at__day').annotate(total_sale=Sum(F('actual_price') - F('discount')))
+            daily_sales_amount = []
+            sales_day = []
+            for sales in monthly_sales_report:
+                daily_sales_amount.append(sales.get('total_sale'))
+                sales_day.append(sales.get('placed_at__day'))
+            if daily_sales_amount and sales_day:
+                monthly_sales_data = {'desc': desc, 'days': daily_sales_amount, 'amount': sales_day}
+            else:
+                logger.exception(f'{FUNCTION_NAME} -> : monthly_sales_report for {year} = {monthly_sales_report}')
+                return JsonResponse({'msg': f'No sales data found for year: {year}'}, status=404)
+            logger.debug(f'{FUNCTION_NAME} -> monthly_sales_report = {monthly_sales_report}')
+            return JsonResponse(monthly_sales_data)
+        else:
+            return JsonResponse({'msg': 'Invalid URL'}, status=400)
+
+    except Exception as ex:
+        logger.exception(f'{FUNCTION_NAME} -> : {ex.__str__()}')
+        return JsonResponse({'msg': 'An Exception Occurred', 'details': ex.__str__()}, status=500)
