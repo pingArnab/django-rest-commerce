@@ -129,6 +129,13 @@ class Order(models.Model):
         STATUS.RETURNED,
         STATUS.PENDING_FOR_PAYMENT
     ]
+    POSITIVE_ORDER_STATUS = [
+        STATUS.PLACED,
+        STATUS.DISPATCHED,
+        STATUS.OUT_FOR_DELIVERY,
+        STATUS.DELIVERED,
+        STATUS.REQUESTED_FOR_REFUND,
+    ]
 
     order_id = models.CharField(primary_key=True, max_length=30, default=generateOrderRefId, editable=False)
 
