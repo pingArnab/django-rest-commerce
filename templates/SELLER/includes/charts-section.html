@@ -11,8 +11,8 @@
     <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
 </div>
 
-<div class="row">
-    <div class="col-lg-6">
+<div class="row h-25">
+    <div class="col-lg-8">
         <div class="card mb-4">
             <div class="card-header">
                 <i class="fas fa-chart-bar me-1"></i>
@@ -25,7 +25,7 @@
             <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
         </div>
     </div>
-    <div class="col-lg-6">
+    <div class="col-lg-4">
         <div class="card mb-4">
             <div class="card-header">
                 <i class="fas fa-chart-pie me-1"></i>
@@ -111,8 +111,8 @@
                     const PieChart = plotPirChart(
                         document.getElementById("PieChartCanvas"),
                         ["New", "Processing", "Delivered", "Cancelled"],
-                        [pieChartData.new, pieChartData.processing, pieChartData.delivered, pieChartData.cancelled],
-                        {#[0, 0, 0, 0],#}
+                        [pieChartData.new, pieChartData.processing, pieChartData.delivered, pieChartData.cancel],
+                        {#[1, 2, 4, 2],#}
                         ['#28a745', '#ffc107', '#007bff', '#dc3545']
                     )
                     order_update.innerHTML = ''
