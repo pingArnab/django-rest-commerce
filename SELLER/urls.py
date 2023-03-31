@@ -21,6 +21,7 @@ urlpatterns = [
 
     path('api/orders/<str:status>/', views.getOrderData),
     path('api/orders/<str:status>/<int:limit>/', views.getOrderData),
+    path('api/sales/', views.get_yearly_sales_stats),
     path('api/sales/<str:sales_type>/', views.get_yearly_sales_stats),
     path('api/sales/<str:sales_type>/<int:sales_range>/', views.get_yearly_sales_stats),
 ]

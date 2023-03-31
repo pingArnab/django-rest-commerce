@@ -449,14 +449,15 @@ def getOrderData(request, status: str, limit=None):
         return JsonResponse({'status': 400})
 
 
-def get_yearly_sales_stats(request, sales_type: str, sales_range=0):
+def get_yearly_sales_stats(request, sales_type: str = None, sales_range=None):
     FUNCTION_NAME = 'get_yearly_sales_stats'
     if not (request.user.is_authenticated and Seller.objects.filter(user=request.user)):
         return JsonResponse({'msg': "Unauthorised"}, status=401)
     try:
-        if sales_type.lower() == 'year':
+        if sales_type == 'year':
             year = sales_range or datetime.date.today().year
             desc = f'Sales for year: {year}'
+            title = f'{year}'
             monthly_sales_report = Order.objects.filter(
                 product__seller__user_id=request.user.id, placed_at__year=year,
                 order_status__in=Order.POSITIVE_ORDER_STATUS
@@ -467,18 +468,19 @@ def get_yearly_sales_stats(request, sales_type: str, sales_range=0):
                 monthly_sales_amount.append(sales.get('total_sale'))
                 sales_month.append(MONTH.get_name(sales.get('placed_at__month')))
             if monthly_sales_amount and sales_month:
-                monthly_sales_data = {'desc': desc, 'months': sales_month, 'amount': monthly_sales_amount}
+                monthly_sales_data = {'title': title, 'desc': desc, 'months': sales_month, 'amount': monthly_sales_amount}
             else:
                 logger.exception(f'{FUNCTION_NAME} -> : monthly_sales_report for {year} = {monthly_sales_report}')
-                return JsonResponse({'msg': f'No sales data found for year: {year}'}, status=404)
+                return JsonResponse({'msg': f'No record found for {year}'}, status=404)
             logger.debug(f'{FUNCTION_NAME} -> monthly_sales_report = {monthly_sales_report}')
             return JsonResponse(monthly_sales_data)
-        if sales_type.lower() == 'month':
-            if sales_range not in range(1, 13):
-                return JsonResponse({'msg': 'Invalid Request: month must be in range of 1 to 12'}, status=400)
-            month = int(sales_range) or datetime.date.today().month
+        elif sales_type == 'month':
+            month = sales_range or datetime.date.today().month
             year = datetime.date.today().year
+            title = f'{MONTH.get_name(month)}, {year}'
             desc = f'Sales for {MONTH.get_short_name(month).upper()}-{year}'
+            if month not in range(1, 13):
+                return JsonResponse({'msg': 'Invalid Request: month must be in range of 1 to 12'}, status=400)
             monthly_sales_report = Order.objects.filter(
                 product__seller__user_id=request.user.id,
                 placed_at__month=month, placed_at__year=year,
@@ -488,14 +490,28 @@ def get_yearly_sales_stats(request, sales_type: str, sales_range=0):
             sales_day = []
             for sales in monthly_sales_report:
                 daily_sales_amount.append(sales.get('total_sale'))
-                sales_day.append(sales.get('placed_at__day'))
+                sales_day.append(f"{MONTH.get_short_name(month)} {sales.get('placed_at__day')}")
             if daily_sales_amount and sales_day:
-                monthly_sales_data = {'desc': desc, 'days': daily_sales_amount, 'amount': sales_day}
+                monthly_sales_data = {'title': title, 'desc': desc, 'days': sales_day, 'amount': daily_sales_amount}
             else:
                 logger.exception(f'{FUNCTION_NAME} -> : monthly_sales_report for {year} = {monthly_sales_report}')
-                return JsonResponse({'msg': f'No sales data found for year: {year}'}, status=404)
+                return JsonResponse({'msg': f'No record found for {MONTH.get_name(month)}, {year}'}, status=404)
             logger.debug(f'{FUNCTION_NAME} -> monthly_sales_report = {monthly_sales_report}')
             return JsonResponse(monthly_sales_data)
+        elif sales_type is None:
+            seller_order = Order.objects.filter(
+                product__seller__user_id=request.user.id,
+                placed_at__month=datetime.date.today().month,
+                placed_at__year=datetime.date.today().year
+            )
+            return JsonResponse({
+                'title': f'{MONTH.get_name(datetime.date.today().month)}, {datetime.date.today().year}',
+                'month_year': f'{MONTH.get_short_name(datetime.date.today().month)}, {datetime.date.today().year}',
+                'new': seller_order.filter(order_status=Order.STATUS.PLACED).count(),
+                'processing': seller_order.filter(order_status__in=Order.ON_TRANSIT_ORDER_STATUS).count(),
+                'delivered': seller_order.filter(order_status=Order.STATUS.DELIVERED).count(),
+                'cancel': seller_order.filter(order_status=Order.STATUS.CANCELED).count(),
+            })
         else:
             return JsonResponse({'msg': 'Invalid URL'}, status=400)
 

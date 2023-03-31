@@ -136,6 +136,10 @@ class Order(models.Model):
         STATUS.DELIVERED,
         STATUS.REQUESTED_FOR_REFUND,
     ]
+    ON_TRANSIT_ORDER_STATUS = [
+        STATUS.DISPATCHED,
+        STATUS.OUT_FOR_DELIVERY,
+    ]
 
     order_id = models.CharField(primary_key=True, max_length=30, default=generateOrderRefId, editable=False)
 
