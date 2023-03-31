@@ -504,13 +504,15 @@ def get_yearly_sales_stats(request, sales_type: str = None, sales_range=None):
                 placed_at__month=datetime.date.today().month,
                 placed_at__year=datetime.date.today().year
             )
+            new = seller_order.filter(order_status=Order.STATUS.PLACED).count()
+            processing = seller_order.filter(order_status__in=Order.ON_TRANSIT_ORDER_STATUS).count()
+            delivered = seller_order.filter(order_status=Order.STATUS.DELIVERED).count()
+            cancel = seller_order.filter(order_status=Order.STATUS.CANCELED).count()
+            logger.debug(f'{FUNCTION_NAME} -> \nnew: {new} \nprocessing: {processing} \ndelivered: {delivered} \ncancel: {cancel}')
             return JsonResponse({
                 'title': f'{MONTH.get_name(datetime.date.today().month)}, {datetime.date.today().year}',
                 'month_year': f'{MONTH.get_short_name(datetime.date.today().month)}, {datetime.date.today().year}',
-                'new': seller_order.filter(order_status=Order.STATUS.PLACED).count(),
-                'processing': seller_order.filter(order_status__in=Order.ON_TRANSIT_ORDER_STATUS).count(),
-                'delivered': seller_order.filter(order_status=Order.STATUS.DELIVERED).count(),
-                'cancel': seller_order.filter(order_status=Order.STATUS.CANCELED).count(),
+                'new': new, 'processing': processing, 'delivered': delivered, 'cancel': cancel
             })
         else:
             return JsonResponse({'msg': 'Invalid URL'}, status=400)
