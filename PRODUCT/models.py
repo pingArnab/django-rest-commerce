@@ -18,6 +18,8 @@ logger = logging.getLogger(__module_name)
 
 
 def format_price(raw_price):
+    if '.' not in raw_price.__str__():
+        return raw_price.__str__()
     price = str(round(raw_price, 2)).split('.')
     price[1] = ('' if price[1] == '0' else '.' + price[1])
     price[1] = (price[1] + '0' if len(price[1]) == 2 else price[1])
