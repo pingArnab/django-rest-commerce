@@ -66,7 +66,7 @@ class CartSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_price(cart: Cart):
-        return float(cart.product.get_price().get('selling_price'))
+        return float(cart.product.get_text_price().get('selling_price'))
 
     @staticmethod
     def get_primary_image(cart: Cart):

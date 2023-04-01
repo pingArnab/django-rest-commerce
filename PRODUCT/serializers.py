@@ -19,7 +19,7 @@ class ProductListSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_price(product):
-        return product.get_price()
+        return product.get_text_price()
 
     def get_is_wishlisted(self, product):
         user: AuthUser = self.context.get('user')
@@ -67,7 +67,7 @@ class SingleProductSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_price(product):
-        return product.get_price()
+        return product.get_text_price()
 
     @staticmethod
     def get_primary_image(product):

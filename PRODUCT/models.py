@@ -155,25 +155,35 @@ class Product(models.Model):
 
     def get_price(self):
         # price_list = [format_price(self.price), 0.0, 0, 0.0]
-        price_list = {
-            'delivery_charge': format_price(self.delivery_charge),
-            'selling_price': format_price(self.price),
-            'actual_price': format_price(self.price),
+        price_obj = {
+            'delivery_charge': self.delivery_charge,
+            'selling_price': self.price,
+            'actual_price': self.price,
             'discount_percentage': 0,
             'discount': 0.0
         }
         time_now = timezone.now()
         if not self.offer:
-            return price_list
+            return price_obj
         if self.offer_start is None or self.offer_end is None:
-            return price_list
+            return price_obj
         if self.offer_start <= time_now <= self.offer_end:
-            price_list['selling_price'] = format_price(self.offer_price)  # Selling Price
-            price_list['actual_price'] = format_price(self.price)  # Actual Price
-            price_list['discount_percentage'] = round(
+            price_obj['selling_price'] = self.offer_price  # Selling Price
+            price_obj['actual_price'] = self.price  # Actual Price
+            price_obj['discount_percentage'] = round(
                 ((self.price - self.offer_price) / self.price) * 100)  # Discount Percentage
-            price_list['discount'] = format_price(self.price - self.offer_price)  # Discount
-        return price_list
+            price_obj['discount'] = self.price - self.offer_price  # Discount
+        return price_obj
+
+    def get_text_price(self):
+        price_obj = self.get_price()
+        price_text_obj = {
+            'selling_price': format_price(price_obj.get('selling_price')),  # Selling Price
+            'actual_price': format_price(price_obj.get('actual_price')),  # Actual Price
+            'discount_percentage': format_price(price_obj.get('discount_percentage')),  # Discount Percentage
+            'discount': format_price(price_obj.get('discount')),  # Discount
+            'delivery_charge': format_price(price_obj.get('delivery_charge'))  # Discount
+        }
 
     def get_rating_star(self):
         color_list = ["none"] * 5
