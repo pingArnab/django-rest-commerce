@@ -101,14 +101,17 @@ class TransactionSerializer(serializers.ModelSerializer):
         total_shipping = 0  # Sum of order delivery_charge
         discount = 0  # Sum of order discount
         total = 0  # Sum of order price
+        grand_total = 0  # Sum of order price
         for order in transaction.order_set.all():
             subtotal += order.actual_price
             total_shipping += order.delivery_charge
             discount += order.discount
             total += order.price
+            grand_total += order.price_delivery
         return {
             'subtotal': subtotal,
             'total_shipping': total_shipping,
             'discount': discount,
-            'total': total
+            'total': total,
+            'grand_total': grand_total
         }
