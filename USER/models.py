@@ -275,16 +275,42 @@ class Cart(models.Model):
         unique_together = ('user', 'product')
 
     def get_total_price(self):
-        return self.quantity * float(self.product.get_price().get('selling_price'))
+        return self.quantity * self.product.get_price().get('selling_price', 0)
 
     def get_total_discount(self):
-        return self.quantity * float(self.product.get_price().get('discount'))
+        return self.quantity * self.product.get_price().get('discount', 0)
 
     @staticmethod
     def total_product_by_username(username: str):
         return Cart.objects.filter(user__username=username).aggregate(
             product_count=models.Sum('quantity')
         ).get('product_count') or 0
+
+    @staticmethod
+    def total_price_by_username(username: str):
+        cart_list = Cart.objects.filter(user__username=username)
+
+        total_delivery_charge = 0
+        total_selling_price = 0
+        total_actual_price = 0
+        total_discount = 0
+        for cart in cart_list:
+            price_obj = cart.product.get_price()
+            print(f'total_price_by_username -> {username} | {cart.product} || {price_obj} | {cart.quantity}')
+            total_delivery_charge = price_obj.get('delivery_charge', 0) * cart.quantity
+            if cart.product.delivery_charge_per_product:
+                total_delivery_charge += price_obj.get('delivery_charge', 0) * cart.quantity
+            else:
+                total_delivery_charge += price_obj.get('delivery_charge', 0)
+            total_selling_price += price_obj.get('selling_price', 0) * cart.quantity
+            total_actual_price += price_obj.get('actual_price', 0) * cart.quantity
+            total_discount += price_obj.get('discount', 0) * cart.quantity
+        return {
+            'delivery_charge': total_delivery_charge,
+            'selling_price': total_selling_price,
+            'actual_price': total_actual_price,
+            'discount': total_discount
+        }
 
     @staticmethod
     def total_amount_by_username(username: str):

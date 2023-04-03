@@ -144,6 +144,7 @@ class Product(models.Model):
 
     # delivery
     delivery_charge = models.FloatField(default=0.0)
+    delivery_charge_per_product = models.BooleanField(default=False)
 
     def get_primary_image_thumbnail(self):
         return blurhash.encode(self.primary_image, x_components=4, y_components=3)

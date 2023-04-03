@@ -143,13 +143,16 @@ def checkout_pre_process(request):
         return ErrorResponse(code=400, msg='Only pay on delivery available').response
 
     try:
-        total_price = Cart.total_amount_by_username(username=user.username)
-        total_discount = Cart.total_discount_by_username(username=user.username)
-        total_delivery_charge = Cart.total_deliver_charge_by_username(username=user.username)
+        total_price_obj = Cart.total_price_by_username(username=user.username)
+        logger.debug(f'{FUNCTION_NAME} -> Total Cart Price {total_price_obj}')
+        print(f'{FUNCTION_NAME} -> Total Cart Price {total_price_obj}')
+        total_selling_price = total_price_obj.get('selling_price', 0)
+        total_discount = total_price_obj.get('discount', 0)
+        total_delivery_charge = total_price_obj.get('delivery_charge', 0)
 
         Cart.total_discount_by_username(username=user.username)
         new_transaction = Transaction.objects.create(
-            amount=total_price - total_discount + total_delivery_charge,
+            amount=total_selling_price + total_delivery_charge,
             payment_method=payment_method
         )
         new_transaction.save()

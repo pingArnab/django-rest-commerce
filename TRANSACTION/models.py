@@ -185,7 +185,6 @@ class Order(models.Model):
         return order
 
     def save(self, *args, **kwargs):
-        print(f'price: {self.price} | {type(self.price)} \nactual_price: {self.actual_price} | {type(self.actual_price)} \ndiscount: {self.discount} | {type(self.discount)}')
         self.price = self.actual_price - self.discount
         self.price_delivery = self.actual_price - self.discount + self.delivery_charge
         super(Order, self).save(*args, **kwargs)
