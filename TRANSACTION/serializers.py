@@ -73,12 +73,14 @@ class TransactionSerializer(serializers.ModelSerializer):
     orders = serializers.SerializerMethodField()
     billing_address = serializers.SerializerMethodField()
     shipping_address = serializers.SerializerMethodField()
+    price = serializers.SerializerMethodField()
 
     class Meta:
         model = Transaction
         fields = (
             'reference_id', 'orders',
-            'billing_address', 'shipping_address', 'payment_method'
+            'billing_address', 'shipping_address',
+            'price', 'payment_method'
         )
 
     @staticmethod
@@ -92,3 +94,21 @@ class TransactionSerializer(serializers.ModelSerializer):
     @staticmethod
     def get_orders(transaction: Transaction):
         return OrderShortSerializer(transaction.order_set.all(), many=True).data
+
+    @staticmethod
+    def get_price(transaction: Transaction):
+        subtotal = 0  # Sum of order actual_price
+        total_shipping = 0  # Sum of order delivery_charge
+        discount = 0  # Sum of order discount
+        total = 0  # Sum of order price
+        for order in transaction.order_set.all():
+            subtotal += order.actual_price
+            total_shipping += order.delivery_charge
+            discount += order.discount
+            total += order.price
+        return {
+            'subtotal': subtotal,
+            'total_shipping': total_shipping,
+            'discount': discount,
+            'total': total
+        }
