@@ -2,6 +2,11 @@ from django.contrib import admin
 from .models import Category, Product, Review
 
 
+def save_all_selected(modeladmin, request, queryset):
+    for item in queryset:
+        item.save()
+
+
 # Register your models here.
 class CategoryAdmin(admin.ModelAdmin):
     list_display = (
@@ -12,6 +17,7 @@ class CategoryAdmin(admin.ModelAdmin):
         'category_id', 'category_name', 'max_discount',
         'sell_count', 'parent',
     ]
+    actions = [save_all_selected]
 
 
 class ProductAdmin(admin.ModelAdmin):
@@ -25,6 +31,7 @@ class ProductAdmin(admin.ModelAdmin):
     ]
     list_filter = ('rating', 'offer')
     readonly_fields = ['primary_image_placeholder', ]
+    actions = [save_all_selected]
 
 
 class ReviewAdmin(admin.ModelAdmin):
@@ -37,6 +44,7 @@ class ReviewAdmin(admin.ModelAdmin):
         'user__userprofile_ph_no', 'product__product_id', 'product__product_name',
         'price', 'title', 'rating',
     ]
+    actions = [save_all_selected]
 
 
 admin.site.register(Product, ProductAdmin)
