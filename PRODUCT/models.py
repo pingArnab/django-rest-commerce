@@ -186,6 +186,7 @@ class Product(models.Model):
             'discount': format_price(price_obj.get('discount')),  # Discount
             'delivery_charge': format_price(price_obj.get('delivery_charge'))  # Discount
         }
+        return price_text_obj
 
     def get_rating_star(self):
         color_list = ["none"] * 5
