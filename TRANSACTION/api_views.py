@@ -145,7 +145,7 @@ def checkout_pre_process(request):
     try:
         total_price_obj = Cart.total_price_by_username(username=user.username)
         logger.debug(f'{FUNCTION_NAME} -> Total Cart Price {total_price_obj}')
-        print(f'{FUNCTION_NAME} -> Total Cart Price {total_price_obj}')
+        # print(f'{FUNCTION_NAME} -> Total Cart Price {total_price_obj}')
         total_selling_price = total_price_obj.get('selling_price', 0)
         total_discount = total_price_obj.get('discount', 0)
         total_delivery_charge = total_price_obj.get('delivery_charge', 0)

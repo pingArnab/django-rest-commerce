@@ -12,7 +12,7 @@ class OrderSerializer(serializers.ModelSerializer):
         model = Order
         fields = (
             'order_id', 'sold_price', 'discount', 'order_status',
-            'product', 'delivery_charge',
+            'product', 'total_delivery_charge',
             'track_update', 'created_at', 'delivered_at', 'returned_at',
             'canceled_at', 'billing_address', 'shipping_address'
         )
@@ -97,21 +97,4 @@ class TransactionSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_price(transaction: Transaction):
-        subtotal = 0  # Sum of order actual_price
-        total_shipping = 0  # Sum of order delivery_charge
-        discount = 0  # Sum of order discount
-        total = 0  # Sum of order price
-        grand_total = 0  # Sum of order price
-        for order in transaction.order_set.all():
-            subtotal += order.actual_price
-            total_shipping += order.delivery_charge
-            discount += order.discount
-            total += order.price
-            grand_total += order.price_delivery
-        return {
-            'subtotal': subtotal,
-            'total_shipping': total_shipping,
-            'discount': discount,
-            'total': total,
-            'grand_total': grand_total
-        }
+        return transaction.get_price()

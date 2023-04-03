@@ -296,8 +296,7 @@ class Cart(models.Model):
         total_discount = 0
         for cart in cart_list:
             price_obj = cart.product.get_price()
-            print(f'total_price_by_username -> {username} | {cart.product} || {price_obj} | {cart.quantity}')
-            total_delivery_charge = price_obj.get('delivery_charge', 0) * cart.quantity
+            # print(f'total_price_by_username -> {username} | {cart.product} || {price_obj} | {cart.quantity}')
             if cart.product.delivery_charge_per_product:
                 total_delivery_charge += price_obj.get('delivery_charge', 0) * cart.quantity
             else:

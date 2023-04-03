@@ -93,6 +93,26 @@ class Transaction(models.Model):
         transaction.save()
         return transaction
 
+    def get_price(self):
+        subtotal = 0  # Sum of order actual_price
+        total_shipping = 0  # Sum of order delivery_charge
+        discount = 0  # Sum of order discount
+        total = 0  # Sum of order price
+        grand_total = 0  # Sum of order price
+        for order in self.order_set.all():
+            subtotal += order.actual_price * order.product_quantity
+            total_shipping += order.total_delivery_charge
+            discount += order.discount * order.product_quantity
+            total += order.total_price
+            grand_total += order.total_price_delivery
+        return {
+            'subtotal': subtotal,
+            'total_shipping': total_shipping,
+            'discount': discount,
+            'total': total,
+            'grand_total': grand_total
+        }
+
     def __str__(self):
         return '{}'.format(self.reference_id)
 
@@ -150,9 +170,11 @@ class Order(models.Model):
 
     actual_price = models.FloatField(default=0)
     discount = models.FloatField(default=0)
-    delivery_charge = models.FloatField(default=0)
     price = models.FloatField(default=0, editable=False)
-    price_delivery = models.FloatField(default=0, editable=False)
+    delivery_charge = models.FloatField(default=0)
+    total_delivery_charge = models.FloatField(default=0)
+    total_price = models.FloatField(default=0, editable=False)
+    total_price_delivery = models.FloatField(default=0, editable=False)
 
     order_status = models.CharField(max_length=4, blank=False, null=False,
                                     choices=__ORDER_STATUS_CHOICES, default='PFP')
@@ -185,15 +207,20 @@ class Order(models.Model):
         return order
 
     def save(self, *args, **kwargs):
+        if self.product.delivery_charge_per_product:
+            self.total_delivery_charge = self.delivery_charge * self.product_quantity
+        else:
+            self.total_delivery_charge = self.delivery_charge
         self.price = self.actual_price - self.discount
-        self.price_delivery = self.actual_price - self.discount + self.delivery_charge
+        self.total_price = self.price * self.product_quantity
+        self.total_price_delivery = self.total_price + self.total_delivery_charge
         super(Order, self).save(*args, **kwargs)
 
     def get_final_price(self):
         return (self.actual_price - self.discount) * self.product_quantity
 
     def get_final_price_wih_shipping(self):
-        return self.get_final_price() + self.delivery_charge
+        return self.get_final_price() + self.total_delivery_charge
 
     def get_shipping_address(self):
         address = self.shipping_address
@@ -202,6 +229,6 @@ class Order(models.Model):
     def get_billing_address(self):
         address = self.billing_address
         return json.loads(address)
-    
+
     def __str__(self):
         return '{}'.format(self.order_id)

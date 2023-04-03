@@ -10,23 +10,24 @@ def save_all_selected(modeladmin, request, queryset):
 # Register your models here.
 class TransactionAdmin(admin.ModelAdmin):
     list_display = (
-        'reference_id', 'payment_method', 'payment_info',
-        'payment_status',
+        'reference_id', 'payment_method', 'amount', 'payment_info',
+        'payment_status', 'created_at'
     )
 
     search_fields = [
-        'reference_id', 'order__order_id', 'order__buyer__username',
-        'order__buyer__first_name', 'order__buyer__last_name', 'shipping_address',
+        'reference_id', 'order__order_id', 'payment_info',
+        'payment_status',
     ]
     list_filter = (
-        'payment_status',
+        'payment_status', 'created_at'
     )
     actions = [save_all_selected]
 
 
 class OrderAdmin(admin.ModelAdmin):
     list_display = (
-        'order_id', 'product', 'product_quantity', 'price', 'price_delivery',
+        'order_id', 'product', 'product_quantity', 'price',
+        'total_price', 'total_price_delivery',
         'buyer', 'created_at', 'placed_at', 'order_status',
     )
 
@@ -35,6 +36,9 @@ class OrderAdmin(admin.ModelAdmin):
         'product__product_id', 'product__product_name',
         'order_status', 'refund_transaction__reference_id', 'transaction__reference_id',
     ]
+    list_filter = (
+        'order_status', 'created_at', 'placed_at'
+    )
     actions = [save_all_selected]
 
 
