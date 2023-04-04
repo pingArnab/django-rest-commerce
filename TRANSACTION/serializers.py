@@ -6,15 +6,14 @@ class OrderSerializer(serializers.ModelSerializer):
     product = serializers.SerializerMethodField()
     billing_address = serializers.SerializerMethodField()
     shipping_address = serializers.SerializerMethodField()
-    sold_price = serializers.SerializerMethodField()
+    price = serializers.SerializerMethodField()
 
     class Meta:
         model = Order
         fields = (
-            'order_id', 'sold_price', 'discount', 'order_status',
-            'product', 'total_delivery_charge',
-            'track_update', 'created_at', 'delivered_at', 'returned_at',
-            'canceled_at', 'billing_address', 'shipping_address'
+            'order_id', 'order_status', 'product', 'track_update',
+            'created_at', 'delivered_at', 'returned_at', 'canceled_at',
+            'billing_address', 'shipping_address', 'price'
         )
 
     @staticmethod
@@ -26,8 +25,14 @@ class OrderSerializer(serializers.ModelSerializer):
         return order.get_shipping_address()
 
     @staticmethod
-    def get_sold_price(order: Order):
-        return order.get_final_price()
+    def get_price(order: Order):
+        return {
+            "subtotal": order.actual_price * order.product_quantity,  # Sum of actual prices
+            "total_shipping": order.total_delivery_charge,  # Sum of shipping
+            "total": order.total_price + order.total_price_delivery,  # subtotal + total_shipping
+            "discount": order.discount * order.product_quantity,  # sum of discounts
+            "grand_total": order.total_price_delivery  # total - discount
+        }
 
     @staticmethod
     def get_product(order: Order):
@@ -38,7 +43,8 @@ class OrderSerializer(serializers.ModelSerializer):
                 'url': order.product.primary_image.url,
                 'placeholder': order.product.primary_image_placeholder
             },
-            'quantity': order.product_quantity
+            'quantity': order.product_quantity,
+            'sold_price': order.price
         }
 
 
@@ -54,7 +60,7 @@ class OrderShortSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_sold_price(order: Order):
-        return order.get_final_price()
+        return order.price
 
     @staticmethod
     def get_product(order: Order):
