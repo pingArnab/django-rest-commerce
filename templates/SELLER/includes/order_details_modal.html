@@ -1,3 +1,4 @@
+{% load custom_tag %}
 <div class="modal fade" id="{{ order.order_id }}_view" tabindex="-1" role="dialog"
     aria-labelledby="{{ order.order_id }}_view" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -55,7 +56,8 @@
                         ship</button>
                 </form>
                 {% endif %}
-                {% if order.order_status not in no_cancel_order_list %}
+
+                {% if not order.order_status|check_non_cancelable_order %}
                 <form class="d-none" method="post" action="{% url 'SELLER:cancel-order' %}">
                     {% csrf_token %}
                     <input type="hidden" name="order_id" value={{ order.order_id }}>

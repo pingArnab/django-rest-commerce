@@ -108,3 +108,11 @@ def status_color_badge(status_coded: str):
 @register.simple_tag
 def get_project_name():
     return settings.CONFIG.PROJECT_NAME
+
+
+@register.filter
+def check_non_cancelable_order(order_status: str):
+    if order_status in Order.NON_CANCELABLE_LIST:
+        return True
+    else:
+        return False

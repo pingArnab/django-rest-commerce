@@ -405,6 +405,9 @@ def cancel_order(request):
         if Order.objects.filter(order_id=order_id):
             order = Order.objects.get(order_id=order_id)
             if order.order_status != Order.STATUS.CANCELED and order.product.seller.user == request.user:
+                if order.order_status in Order.NON_CANCELABLE_LIST:
+                    messages.error(request, f"This Order [order id: {order_id}] can't be canceled.")
+                    return redirect(return_to)
                 order.order_status = Order.STATUS.CANCELED
                 order.created_at = datetime.datetime.now().astimezone()
                 order.product.in_stock += order.product_quantity
