@@ -11,23 +11,23 @@
             </div>
             <div class="modal-body text-left row">
                 <div class="col-4">
-                    <img src="/media/{{ order.product__primary_image }}" class="rounded img-thumbnail"
+                    <img src="/media/{{ order.product.primary_image }}" class="rounded img-thumbnail"
                         style="max-height: 100px; margin: auto;"
-                        alt="{{ order.product__product_id | truncatechars:10 }}">
+                        alt="{{ order.product.product_id | truncatechars:10 }}">
                 </div>
                 <div class="col-8">
                     <h6 class="product_id mb-4">
                         <span class="text-secondary font-weight-bold">Product ID:</span>
-                        <span class="text-primary">{{ order.product__product_id }}</span>
+                        <span class="text-primary">{{ order.product.product_id }}</span>
                     </h6>
                     <p class="product_name "><span class="text-secondary font-weight-bold">
-                        Product name:</span> {{ order.product__product_name }}
+                        Product name:</span> {{ order.product.product_name }}
                     </p>
                     <p class="price_quantity">
                         <span class="text-secondary font-weight-bold">Quantity:</span> <span
                             class="badge badge-primary">{{ order.product_quantity }}</span> |
                         <span class="text-secondary font-weight-bold">Total Price:</span> <span
-                            class="text-success font-weight-bold">₹ {{ order | get_final_price | floatformat:2 }}</span>
+                            class="text-success font-weight-bold">₹ {{ order.total_price | floatformat:2 }}</span>
                     </p>
                 </div>
             </div>

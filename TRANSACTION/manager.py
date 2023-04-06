@@ -56,13 +56,7 @@ def getSellerOrdersDict(seller, status=''):
             Order.STATUS.RETURNED,
             Order.STATUS.CANCELED,
         ]
-    order = Order.objects.values(
-        'order_id', 'product__product_name', 'product__product_id',
-        'product__primary_image', 'product_quantity', 'shipping_address',
-        'actual_price', 'discount', 'product_quantity',
-        'order_status', 'placed_at', 'last_updated_at',
-        'shipped_at', 'delivered_at', 'returned_at', 'canceled_at'
-    ).filter(
+    order = Order.objects.filter(
         order_status__in=order_status,
         product__seller__user_id=seller.id
     ).order_by(shorting_string)
