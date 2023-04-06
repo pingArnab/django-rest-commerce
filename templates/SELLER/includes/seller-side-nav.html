@@ -34,9 +34,9 @@
             </ul>
         </li>
         <li>
-            <a href="{% url 'SELLER:all-message' %}" class="nav-link  d-flex align-items-center" style="gap: 0.4rem">
+            <a href="{% url 'SELLER:all-message' %}" class="nav-link d-flex align-items-center" style="gap: 0.4rem">
                 <i data-feather="mail"></i> Notification
-                {% if unread_message_count %}<span class="badge badge-light">{{ unread_message_count }}</span>{% endif %}
+                {% if unread_message_count %}<span class="badge badge-primary" style="background: rgba(19,163,215,0.56)">{{ unread_message_count }}</span>{% endif %}
             </a>
         </li>
 

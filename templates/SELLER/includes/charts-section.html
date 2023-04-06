@@ -1,39 +1,71 @@
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-chart-pie me-1"></i>
+                Extra Sale: <span id="extra_sale_year"></span>
+            </div>
+            <div id="ExtraChartCard" class="card-body d-flex align-items-center text-center">
+{#                <div class="chart-loading spinner-border text-primary m-auto" role="status">#}
+{#                    <span class="sr-only">Loading...</span>#}
+{#                </div>#}
+{#                <canvas class="chart-canvas d-none" id="BarChartCanvas"></canvas>#}
+{#                <div class="chart-error text-danger m-auto d-none">Error in loading data!</div>#}
+                <div class="chart-error text-primary m-auto">Coming Soon...</div>
 
-<div class="card mb-4">
-    <div class="card-header">
-        <i class="fas fa-chart-area me-1"></i>
-        Monthly Sale: <span id="monthly_sale_year"></span>
+            </div>
+        <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
     </div>
-    <div class="card-body d-flex align-items-center text-center">
-        <canvas id="AreaChartCanvas" width="100%" height="30"></canvas>
-        <div id="monthly">Loading...</div>
     </div>
-    <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
+    <div class="col-md-8 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-chart-area me-1"></i>
+                Monthly Sale: <span id="monthly_sale_year"></span>
+            </div>
+            <div id="MonthlyChartCard" class="card-body d-flex align-items-center text-center">
+                <div class="chart-loading spinner-border text-primary m-auto" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+                <canvas class="chart-canvas d-none" id="BarChartCanvas"></canvas>
+                <div class="chart-error text-danger m-auto d-none">Error in loading data!</div>
+            </div>
+        <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
+    </div>
+    </div>
+
 </div>
 
+
 <div class="row h-25">
-    <div class="col-lg-8">
-        <div class="card mb-4">
+    <div class="col-lg-8 mb-4">
+        <div class="card">
             <div class="card-header">
                 <i class="fas fa-chart-bar me-1"></i>
                 Yearly Sale: <span id="yearly_sale_year"></span>
             </div>
-            <div class="card-body  d-flex align-items-center text-center">
-                <canvas id="BarChartCanvas" width="100%" height="50"></canvas>
-                <div id="yearly">Loading...</div>
+            <div id="YearlyChartCard" class="card-body d-flex align-items-center text-center">
+                <div class="chart-loading spinner-border text-primary m-auto" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+                <canvas class="chart-canvas d-none" id="BarChartCanvas"></canvas>
+                <div class="chart-error text-danger m-auto d-none">Error in loading data!</div>
             </div>
             <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
         </div>
     </div>
-    <div class="col-lg-4">
-        <div class="card mb-4">
+    <div class="col-lg-4 mb-4">
+        <div class="card">
             <div class="card-header">
                 <i class="fas fa-chart-pie me-1"></i>
                 Order Analysis: <span id="order_analysis_month"></span>
             </div>
-            <div class="card-body d-flex align-items-center text-center">
-                <canvas id="PieChartCanvas" width="100%" height="50"></canvas>
-                <div id="order">Loading...</div>
+            <div id="OrderChartCard" class="card-body d-flex align-items-center text-center">
+                <div class="chart-loading spinner-border text-primary m-auto" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+                <canvas class="chart-canvas d-none" id="BarChartCanvas"></canvas>
+                <div class="chart-error text-danger m-auto d-none">Error in loading data!</div>
             </div>
             <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
         </div>
@@ -47,79 +79,60 @@
 
         // Load chart
         document.body.onload = function () {
-            load_monthly_data('/seller/api/sales/month/')
-            load_yearly_data('/seller/api/sales/year/')
-            load_order_data('/seller/api/sales/')
+            document.getElementById('monthly_sale_year').innerText = load_chart(
+                'MonthlyChartCard', '/seller/api/sales/month/', 'month')
+            document.getElementById('yearly_sale_year').innerText = load_chart(
+                'YearlyChartCard', '/seller/api/sales/year/', 'year')
+            document.getElementById('order_analysis_month').innerText = load_chart(
+                'OrderChartCard', '/seller/api/sales/', 'order')
         }
 
-        //Load Monthly Sales Report
-        const load_monthly_data = (url) => {
-            const monthly_update = document.getElementById('monthly')
-            monthly_update.innerHTML = 'Loading...'
-            monthly_update.className = ''
+                //Load Monthly Sales Report
+        const load_chart = (chart_area_id, url, type) => {
+            const chart_area = document.getElementById(chart_area_id)
+            const chart_canvas = chart_area.querySelector('.chart-canvas')
+            const chart_error = chart_area.querySelector('.chart-error')
+            const chart_loading = chart_area.querySelector('.chart-loading')
+
+            chart_canvas.classList.add('d-none')
+            chart_error.classList.add('d-none')
+            chart_loading.classList.remove('d-none')
+
             try {
-                let areaChartData = reqApi(url)
-                if(areaChartData.error){
-                    monthly_update.innerHTML = areaChartData.error
+                let chartData = reqApi(url)
+                if(chartData.error){
+                    chart_loading.classList.add('d-none')
+                    chart_canvas.classList.add('d-none')
+                    chart_error.innerText = chartData.error
+                    chart_error.classList.remove('d-none')
                 }else {
-                    document.getElementById('monthly_sale_year').innerHTML = areaChartData.title
-                    const AreaChart = plotAreaChart(document.getElementById("AreaChartCanvas"), areaChartData.days, areaChartData.amount)
-                    monthly_update.innerHTML = ''
+                    chart_loading.classList.add('d-none')
+                    chart_error.classList.add('d-none')
+                    chart_canvas.classList.remove('d-none')
+                    if(type.toLowerCase()==='year') {
+                        const BarChart = plotBarChart(chart_canvas, chartData.months, chartData.amount)
+                    }else if(type.toLowerCase()==='month') {
+                        const AreaChart = plotAreaChart(chart_canvas, chartData.days, chartData.amount)
+                    }else if(type.toLowerCase()==='order') {
+                        const PieChart = plotPirChart(
+                            chart_canvas,
+                            ["New", "Processing", "Delivered", "Cancelled"],
+                            [chartData.new, chartData.processing, chartData.delivered, chartData.cancel],
+                            ['#007bff', '#ffc107', '#28a745', '#dc3545']
+                        )
+                    }else {
+                        chart_loading.classList.add('d-none')
+                        chart_canvas.classList.add('d-none')
+                        chart_error.innerText = chartData.error
+                        chart_error.classList.remove('d-none')
+                    }
+                    return chartData.title
                 }
             }catch (e) {
-                monthly_update.className = 'text-danger'
-                monthly_update.innerHTML = 'Error Loading data'
-            }
-        }
-
-        //Load Yearly Sales Report
-        const load_yearly_data = (url) => {
-            const yearly_update = document.getElementById('yearly')
-            yearly_update.innerHTML = 'Loading...'
-            yearly_update.className = ''
-            let barChartData = reqApi(url)
-            try {
-                if(barChartData.error) {
-                    yearly_update.innerHTML = barChartData.error
-                }else{
-                    document.getElementById('yearly_sale_year').innerHTML = barChartData.title
-                    console.log(`BarChartData => month ${barChartData.months} | amount: ${barChartData.amount}`)
-                    const BarChart = plotBarChart(document.getElementById("BarChartCanvas"), barChartData.months, barChartData.amount)
-                    yearly_update.innerHTML = ''
-                }
-                }catch (e) {
-                    yearly_update.className = 'text-danger'
-                    yearly_update.innerHTML = 'Error Loading data'
-                }
-        }
-
-        //Load all order analysis
-        const load_order_data = (url) => {
-            const order_update = document.getElementById('order')
-            order_update.innerHTML = 'Loading...'
-            order_update.className = ''
-            try{
-                let pieChartData = reqApi(url)
-                console.log(pieChartData)
-                console.log(0 & null)
-                if(pieChartData.error) {
-                    order_update.innerHTML = pieChartData.error
-                }else if(!(pieChartData.new || pieChartData.processing || pieChartData.delivered || pieChartData.cancelled)){
-                    order_update.innerHTML = 'No record Found!'
-                }else{
-                    document.getElementById('order_analysis_month').innerHTML = pieChartData.title
-                    const PieChart = plotPirChart(
-                        document.getElementById("PieChartCanvas"),
-                        ["New", "Processing", "Delivered", "Cancelled"],
-                        [pieChartData.new, pieChartData.processing, pieChartData.delivered, pieChartData.cancel],
-                        {#[1, 2, 4, 2],#}
-                        ['#007bff', '#ffc107', '#28a745', '#dc3545']
-                    )
-                    order_update.innerHTML = ''
-                }
-            }catch (e) {
-                order_update.className = 'text-danger'
-                order_update.innerHTML = 'Error Loading data'
+                chart_loading.classList.add('d-none')
+                chart_canvas.classList.add('d-none')
+                chart_error.innerText = 'Error in loading data!'
+                chart_error.classList.remove('d-none')
             }
         }
     </script>
