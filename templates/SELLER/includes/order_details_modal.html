@@ -1,6 +1,6 @@
 {% load custom_tag %}
 <div class="modal fade" id="{{ order.order_id }}_view" tabindex="-1" role="dialog"
-    aria-labelledby="{{ order.order_id }}_view" aria-hidden="true">
+     aria-labelledby="{{ order.order_id }}_view" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -12,8 +12,8 @@
             <div class="modal-body text-left row">
                 <div class="col-4">
                     <img src="/media/{{ order.product.primary_image }}" class="rounded img-thumbnail"
-                        style="max-height: 100px; margin: auto;"
-                        alt="{{ order.product.product_id | truncatechars:10 }}">
+                         style="max-height: 100px; margin: auto;"
+                         alt="{{ order.product.product_id | truncatechars:10 }}">
                 </div>
                 <div class="col-8">
                     <h6 class="product_id mb-4">
@@ -34,38 +34,80 @@
             <div class="modal-footer float-left">
                 Shipment status:
                 <span class="{{ order.order_status | status_color_badge }}">
-                    {{ order.order_status | to_status_text}}
+                    {{ order.order_status | to_status_text }}
                 </span>
             </div>
             <div class="modal-footer float-left">
 
                 {% if order.order_status == 'PLC' %}
-                <form class="d-none" method="post" action="{% url 'SELLER:mark-order-ready-to-ship' %}">
-                    {% csrf_token %}
-                    <input type="hidden" name="order_id" value={{ order.order_id }}>
-                    <input type="hidden" name="return-to" value={{ request.path }}>
-                    <button type="submit" class="btn btn-primary"><i data-feather="check-circle"></i> Ready to
-                        ship</button>
-                </form>
+                    <form class="d-none" method="post" action="{% url 'SELLER:mark-order-ready-to-ship' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="order_id" value={{ order.order_id }}>
+                        <input type="hidden" name="return-to" value={{ request.path }}>
+                        <button type="submit" class="btn btn-primary"><i data-feather="check-circle"></i> Ready to
+                            ship
+                        </button>
+                    </form>
                 {% elif order.order_status == 'RFS' %}
-                <form class="d-none" method="post" action="{% url 'SELLER:unmark-order-ready-to-ship' %}">
-                    {% csrf_token %}
-                    <input type="hidden" name="order_id" value={{ order.order_id }}>
-                    <input type="hidden" name="return-to" value={{ request.path }}>
-                    <button type="submit" class="btn btn-danger"><i data-feather="x-circle"></i> Unready to
-                        ship</button>
-                </form>
+                    <form class="d-none" method="post" action="{% url 'SELLER:unmark-order-ready-to-ship' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="order_id" value={{ order.order_id }}>
+                        <input type="hidden" name="return-to" value={{ request.path }}>
+                        <button type="submit" class="btn btn-danger"><i data-feather="x-circle"></i> Unready to
+                            ship
+                        </button>
+                    </form>
                 {% endif %}
 
                 {% if not order.order_status|check_non_cancelable_order %}
-                <form class="d-none" method="post" action="{% url 'SELLER:cancel-order' %}">
-                    {% csrf_token %}
-                    <input type="hidden" name="order_id" value={{ order.order_id }}>
-                    <input type="hidden" name="return-to" value={{ request.path }}>
-                    <button type="submit" class="btn btn-danger">Cancel</button>
-                </form>
+
+                    <button type="button" class="btn btn-danger" data-toggle="modal"
+                            data-target="#{{ order.order_id }}_cancel">Cancel Order
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="{{ order.order_id }}_cancel" tabindex="-1" role="dialog"
+                         aria-labelledby="{{ order.order_id }}_label" aria-hidden="true">
+                        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+                            <div class="modal-content bg-dark text-white">
+
+                                <form class="d-none" method="post" action="{% url 'SELLER:cancel-order' %}">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="{{ order.order_id }}_label">
+                                            Do you really want to cancel?
+                                        </h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true" class="text-white">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="form-group">
+                                            <label for="message-text" class="col-form-label">Reason:</label>
+                                            <textarea name="seller_comment" rows="5"
+                                                      class="form-control" id="message-text" required></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-light" data-dismiss="modal">Close
+                                        </button>
+                                        {% csrf_token %}
+                                        <input type="hidden" name="order_id" value={{ order.order_id }}>
+                                        <input type="hidden" name="return-to" value={{ request.path }}>
+                                        <button type="submit" class="btn btn-success">Submit</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                 {% endif %}
             </div>
         </div>
     </div>
+    <script>
+        $(document).ready(function () {
+            $('[data-toggle="popover"]').popover();
+        });
+    </script>
+
 </div>

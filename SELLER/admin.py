@@ -20,11 +20,12 @@ class SellerAdmin(admin.ModelAdmin):
             return 'ERROR!!\n {}'.format(e)
 
     list_display = (
-        'user',  'seller_id',  'full_name',  'email',  'ph_no',
-        'total_sale',  'profile_image',  'address',  'gstin', 'verified'
+        'user', 'seller_id', 'full_name', 'email', 'ph_no',
+        'total_sale', 'profile_image', 'address', 'gstin', 'verified'
     )
     search_fields = [
-         'seller_id', 'user__username', 'user__first_name', 'user__last_name',  'user__email',  'ph_no', 'address',  'gstin',
+        'seller_id', 'user__username', 'user__first_name',
+        'user__last_name', 'user__email', 'ph_no', 'address', 'gstin',
     ]
 
 

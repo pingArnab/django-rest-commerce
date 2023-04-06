@@ -28,7 +28,7 @@ class OrderAdmin(admin.ModelAdmin):
     list_display = (
         'order_id', 'product', 'product_quantity', 'price',
         'total_price', 'total_price_delivery',
-        'buyer', 'created_at', 'placed_at', 'order_status',
+        'buyer', 'created_at', 'last_updated_at', 'placed_at', 'order_status',
     )
 
     search_fields = [
@@ -37,7 +37,7 @@ class OrderAdmin(admin.ModelAdmin):
         'order_status', 'refund_transaction__reference_id', 'transaction__reference_id',
     ]
     list_filter = (
-        'order_status', 'created_at', 'placed_at'
+        'order_status', 'created_at', 'placed_at', 'last_updated_at'
     )
     actions = [save_all_selected]
 

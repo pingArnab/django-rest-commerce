@@ -409,12 +409,12 @@ def cancel_order(request):
                     messages.error(request, f"This Order [order id: {order_id}] can't be canceled.")
                     return redirect(return_to)
                 order.order_status = Order.STATUS.CANCELED
-                order.created_at = datetime.datetime.now().astimezone()
+                order.canceled_at = datetime.datetime.now().astimezone()
                 order.product.in_stock += order.product_quantity
 
                 msg = Message.objects.create(
                     title=f'Order Canceled: {order_id}',
-                    body=f'An order canceled by Seller with below comment: \n{seller_comment if seller_comment else ""}',
+                    body=f'This order [{order_id}] was canceled by Seller for below reason: \n{seller_comment if seller_comment else ""}',
                     receiver=order.buyer,
                     sender=request.user,
                 )
