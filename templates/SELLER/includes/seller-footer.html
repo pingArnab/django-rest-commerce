@@ -1,14 +1,14 @@
-
+{% load custom_tag %}
 <footer class="py-4 bg-light mt-auto">
     <div class="container-fluid">
         <div class="d-flex align-items-center justify-content-between small">
-            <div class="text-muted">Copyright &copy; CTMela 2021</div>
+            <div class="text-muted">Copyright &copy; {% get_project_name %} {% get_current_year %}</div>
             <div>
-                <a href="https://uat.ctmela.com/policies/privacy-policy">Privacy Policy</a>
+                <a href="/policies/privacy-policy">Privacy Policy</a>
                 &middot;
-                <a href="https://uat.ctmela.com/policies/terms-of-use">Terms of Use</a>
+                <a href="/policies/terms-of-use">Terms of Use</a>
                 &middot;
-                <a href="https://uat.ctmela.com/policies/cookie-policy">Cookie Policy</a>
+                <a href="/policies/cookie-policy">Cookie Policy</a>
             </div>
         </div>
     </div>

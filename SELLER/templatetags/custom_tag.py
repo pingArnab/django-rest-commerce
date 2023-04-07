@@ -1,3 +1,4 @@
+import datetime
 import traceback
 
 from django import template
@@ -107,7 +108,12 @@ def status_color_badge(status_coded: str):
 
 @register.simple_tag
 def get_project_name():
-    return settings.CONFIG.PROJECT_NAME
+    return settings.CONFIG.PROJECT_NAME or 'DRC'
+
+
+@register.simple_tag
+def get_current_year():
+    return datetime.datetime.now().astimezone().year
 
 
 @register.filter
