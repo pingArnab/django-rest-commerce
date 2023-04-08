@@ -88,9 +88,14 @@ INSTALLED_APPS = [
     'django_cleanup.apps.CleanupConfig',
     'django.contrib.humanize',
     'dbbackup',  # django-dbbackup
+    'django_crontab',
 
     # Log Viewer
     "log_viewer",
+]
+
+CRONJOBS = [
+    ('* * * * *', 'TRANSACTION.cron.print_all_transaction_ids')
 ]
 
 # DB Backup config
@@ -232,9 +237,8 @@ LOGGING = LOG_CONFIG
 LOG_VIEWER_FILES = ['DRC_dev']
 LOG_VIEWER_FILES_PATTERN = '*.log*'
 LOG_VIEWER_FILES_DIR = 'log/'
-LOG_VIEWER_PAGE_LENGTH = 25       # total log lines per-page
+LOG_VIEWER_PAGE_LENGTH = 25  # total log lines per-page
 LOG_VIEWER_MAX_READ_LINES = 1000  # total log lines will be read
 LOG_VIEWER_FILE_LIST_MAX_ITEMS_PER_PAGE = 25  # Max log files loaded in Datatable per page
 LOG_VIEWER_PATTERNS = ['[INFO]', '[DEBUG]', '[WARNING]', '[ERROR]', '[CRITICAL]', 'LOG: [']
 LOG_VIEWER_EXCLUDE_TEXT_PATTERN = None  # String regex expression to exclude the log from line
-
