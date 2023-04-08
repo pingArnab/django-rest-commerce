@@ -95,7 +95,7 @@ INSTALLED_APPS = [
 ]
 
 CRONJOBS = [
-    ('* * * * *', 'TRANSACTION.cron.print_all_transaction_ids')
+    ('* * * * *', 'TRANSACTION.cron.print_all_transaction_ids',  '>> corn.log')
 ]
 
 # DB Backup config
