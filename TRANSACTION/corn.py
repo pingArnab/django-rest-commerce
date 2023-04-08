@@ -9,3 +9,4 @@ logger = logging.getLogger(__module_name)
 def print_all_transaction_ids():
     FUNCTION_NAME = 'print_all_transaction_ids_corn'
     logger.warning(f'{FUNCTION_NAME}-> (Corn job) Transaction Count: {Transaction.objects.all().count()}')
+    print(f'{FUNCTION_NAME}-> (Corn job) Transaction Count: {Transaction.objects.all().count()}')
