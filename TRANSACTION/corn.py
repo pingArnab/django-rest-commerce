@@ -1,4 +1,6 @@
-from .models import Transaction
+import datetime
+
+from MESSAGE.models import Message
 import logging
 from DRC.settings import PROJECT_NAME
 
@@ -8,5 +10,11 @@ logger = logging.getLogger(__module_name)
 
 def print_all_transaction_ids():
     FUNCTION_NAME = 'print_all_transaction_ids_corn'
-    logger.warning(f'{FUNCTION_NAME}-> (Corn job) Transaction Count: {Transaction.objects.all().count()}')
-    print(f'{FUNCTION_NAME}-> (Corn job) Transaction Count: {Transaction.objects.all().count()}')
+    msg = Message.objects.create(
+        title=f'Corn Job Run -> {datetime.datetime.now().astimezone()}',
+        body=f'Corn Job Run -> {datetime.datetime.now().astimezone()}',
+        receiver_id=1,
+        sender_id=1
+    )
+    msg.save()
+    logger.warning(f'{FUNCTION_NAME}-> (Corn job) Triggered !')
