@@ -88,14 +88,9 @@ INSTALLED_APPS = [
     'django_cleanup.apps.CleanupConfig',
     'django.contrib.humanize',
     'dbbackup',  # django-dbbackup
-    'django_crontab',
 
     # Log Viewer
     "log_viewer",
-]
-
-CRONJOBS = [
-    ('* * * * *', 'TRANSACTION.cron.print_all_transaction_ids',  '>> corn.log')
 ]
 
 # DB Backup config
