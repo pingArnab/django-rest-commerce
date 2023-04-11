@@ -115,7 +115,6 @@ def get_seller_sales_stat(seller):
         placed_at__year=datetime.date.today().year,
         order_status__in=Order.POSITIVE_ORDER_STATUS
     ).values('product__seller').annotate(total_sale=Sum(F('actual_price') - F('discount')))
-    print(monthly_total_sale)
     today_total_sale = Order.objects.filter(
         product__seller__user_id=seller.id,
         placed_at__day=datetime.date.today().day,

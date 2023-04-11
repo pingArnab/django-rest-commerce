@@ -39,7 +39,7 @@ if ENV_TYPE.upper() == 'TEST':
     DEBUG_FLAG = False if (os.environ.get('DJANGO_DEBUG_MODE', '').upper() == 'FALSE') else True
     DBConfig = {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': BASE_DIR / 'db_specification-template.sqlite3',
     }
 else:
     DEBUG_FLAG = True if (os.environ.get('DJANGO_DEBUG_MODE', '').upper() == 'TRUE') else False
