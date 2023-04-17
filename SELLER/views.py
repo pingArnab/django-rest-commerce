@@ -159,7 +159,7 @@ def add_product(request):
                 seller=request.user.seller,
 
                 tag=request.POST.get('tag'),
-                in_stock=request.POST.get('in_stock'),
+                in_stock=request.POST.get('stock'),
                 max_per_cart=request.POST.get('max_per_cart'),
                 # warranty=request.POST.get('warranty') or 0,
 
