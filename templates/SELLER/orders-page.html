@@ -3,7 +3,7 @@
 
 {% block nav_content %}
     {% include 'SELLER/includes/seller-nav.html' %}
-{%  endblock nav_content %}
+{% endblock nav_content %}
 
 
 {% block body_content %}
@@ -14,6 +14,8 @@
         <!-- Table Section Start -->
         {% include 'SELLER/includes/order_table.html' with order_list=order_list no_cancel_order_list=no_cancel_order_list %}
         <!-- Table Section end -->
+
+        <hr>
     </div>
 
 {% endblock body_content %}
