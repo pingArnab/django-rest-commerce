@@ -45,7 +45,7 @@
                                     <img
                                             src="/media/{{ product.primary_image }}"
 {#                                            style="max-height: 100px; max-width: 100px; margin: auto;"#}
-                                            style="width: 45px; height: 45px"
+                                            style="width: 3rem; height: 3rem"
                                             class="rounded-circle m-auto"
                                             alt="{{ product.product_id | truncatechars:10 }}"
                                     >
@@ -53,8 +53,8 @@
                                 </td>
                                 <td class="align-middle" style="max-width: 18rem">{{ product.product_name | truncatechars:130}}</td>
                                 <td class="align-middle text-right">{{ product.in_stock }}</td>
-                                <td class="align-middle text-right">₹ {{ product.price | floatformat:2 }}</td>
-                                <td class="align-middle text-right">₹ {{ product.offer_price }}</td>
+                                <td class="align-middle text-right">₹{{ product.price | floatformat:2 }}</td>
+                                <td class="align-middle text-right">₹{{ product.offer_price }}</td>
     {#                                        <td class="align-middle">{{ product.category__category_name }}</td>#}
                                 <td class="align-middle text-center">{{ product.sell_count }}</td>
                                 <td class="align-middle" style="max-width: 5rem">
