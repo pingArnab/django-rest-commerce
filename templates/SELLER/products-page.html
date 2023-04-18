@@ -2,9 +2,36 @@
 {% load humanize %}
 {% load static %}
 
+{% block head_content %}
+    <style>
+        .tr-product {
+            cursor: pointer;
+        }
+
+        .td-product-id {
+            max-width: 10rem;
+        }
+
+        .td-product-img {
+            max-width: 25rem;
+        }
+
+        .td-product-name {
+            max-width: 25rem;
+            min-width: 15rem;
+        }
+
+        .td-product-modified {
+            max-width: 5rem;
+            min-width: 3rem;
+        }
+
+    </style>
+{% endblock head_content %}
+
 {% block nav_content %}
     {% include 'SELLER/includes/seller-nav.html' %}
-{%  endblock nav_content %}
+{% endblock nav_content %}
 
 
 {% block body_content %}
@@ -30,7 +57,7 @@
                             <th class="text-right">Stock</th>
                             <th class="text-right">Price</th>
                             <th class="text-right">Offer</th>
-    {#                                    <th>Category</th>#}
+                            {#                                    <th>Category</th>#}
                             <th class="text-center">Total Sell</th>
                             <th>Last Modified</th>
                         </tr>
@@ -38,27 +65,28 @@
 
                         <tbody class="text-dark">
                         {% for product in products %}
-                            <tr style="cursor: pointer" onclick="location.href='{% url "SELLER:edit-product" product.product_id %}'">
+                            <tr class="tr-product"
+                                onclick="location.href='{% url "SELLER:edit-product" product.product_id %}'">
                                 <td class="d-none"></td>
-                                <td class="align-middle text-left" style="max-width: 8rem">{{ product.product_id }}</td>
-                                <td style="max-width: 25rem">
+                                <td class="align-middle text-left td-product-id">{{ product.product_id }}</td>
+                                <td class="td-product-img">
                                     <img
                                             src="/media/{{ product.primary_image }}"
-{#                                            style="max-height: 100px; max-width: 100px; margin: auto;"#}
+                                            {#                                            style="max-height: 100px; max-width: 100px; margin: auto;"#}
                                             style="width: 3rem; height: 3rem"
                                             class="rounded-circle m-auto"
                                             alt="{{ product.product_id | truncatechars:10 }}"
                                     >
 
                                 </td>
-                                <td class="align-middle" style="max-width: 18rem">{{ product.product_name | truncatechars:130}}</td>
+                                <td class="align-middle td-product-name">{{ product.product_name | truncatechars:60 }}</td>
                                 <td class="align-middle text-right">{{ product.in_stock }}</td>
                                 <td class="align-middle text-right">₹{{ product.price | floatformat:2 }}</td>
                                 <td class="align-middle text-right">₹{{ product.offer_price }}</td>
-    {#                                        <td class="align-middle">{{ product.category__category_name }}</td>#}
+                                {#                                        <td class="align-middle">{{ product.category__category_name }}</td>#}
                                 <td class="align-middle text-center">{{ product.sell_count }}</td>
-                                <td class="align-middle" style="max-width: 5rem">
-                                    <span class="d-none">{{ product.last_modified | date:"ymdHms"}}</span>
+                                <td class="align-middle td-product-modified" style="">
+                                    <span class="d-none">{{ product.last_modified | date:"ymdHms" }}</span>
                                     {{ product.last_modified | naturaltime }}
                                 </td>
                             </tr>
