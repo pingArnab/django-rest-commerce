@@ -1,3 +1,7 @@
+:root {
+    --light-dark: #484e54;
+}
+
 p {
     font-size: 1.1em;
     font-weight: 300;
@@ -15,6 +19,10 @@ a:focus {
     color: inherit;
     text-decoration: none;
     transition: all 0.3s
+}
+
+.text-cus-light-dark {
+    color: var(--light-dark);
 }
 
 .navbar {
@@ -46,7 +54,7 @@ a:focus {
 
 #sidebar {
     width: 250px;
-    background: #005086;
+    background: var(--light-dark);
     color: #fff;
     transition: all 0.3s ease-in-out;
     position: fixed;
@@ -60,12 +68,12 @@ a:focus {
 
 #sidebar .sidebar-header {
     padding: 20px;
-    background: #005086
+    background: var(--light-dark)
 }
 
 #sidebar ul.components {
     padding: 20px 0;
-    border-bottom: 1px solid #47748b
+    border-bottom: 1px solid var(--light-dark)
 }
 
 #sidebar ul p {
@@ -83,13 +91,13 @@ a:focus {
 
 #sidebar ul li a:hover {
     color: #fff;
-    background: #318fb5;
+    background: var(--light-dark);
 }
 
-#sidebar ul li.active>a,
+#sidebar ul li.active > a,
 a[aria-expanded="true"] {
     color: #fff;
-    background: #318fb5;
+    background: var(--light-dark);
 }
 
 a[data-toggle="collapse"] {
@@ -126,7 +134,7 @@ a[data-toggle="collapse"] {
 ul ul a {
     font-size: 0.9em !important;
     padding-left: 30px !important;
-    background: #318fb5;
+    background: var(--light-dark);
 }
 
 ul.CTAs {
@@ -141,10 +149,10 @@ ul.CTAs a {
     margin-bottom: 5px
 }
 
-.user-container{
+.user-container {
     position: absolute;
     bottom: 0;
-    border-top: 1px solid #47748b;
+    border-top: 1px solid var(--light-dark);
     width: 100%;
     margin: 0;
 }
@@ -154,13 +162,13 @@ ul.CTAs a {
     margin-bottom: 10px;
 }
 
-a.logout-btn{
-    background: #318fb5;
+a.logout-btn {
+    background: var(--light-dark);
     color: #fff;
 }
 
 a.logout-btn:hover {
-    background: #1195cb !important;
+    background: var(--light-dark) !important;
     color: #fff;
 }
 
@@ -173,6 +181,7 @@ a.logout-btn:hover {
     width: calc(100% - 250px);
     left: 250px;
 }
+
 .content.active {
     width: 100%;
     left: 0;

@@ -27,7 +27,7 @@
                         <td class="align-middle " style="max-width: 15rem">{{ order.order_id }}</td>
                         <td class="align-middle" style="max-width: 25rem">{{ order.product.product_name | truncatechars:60}}</td>
                         <td class="align-middle text-center">{{ order.product_quantity }}</td>
-                        <td class="align-middle text-right">₹  {{ order.price }}</td>
+                        <td class="align-middle text-right">₹{{ order.price }}</td>
                         <td class="align-middle text-right"><span class="{{ order.order_status | status_color_badge }} badge-pill">{{ order.order_status | to_status_text}}</span></td>
                         <td class="align-middle" style="max-width: 5rem">
                             <span class="d-none">{{ order.last_updated_at | date:"ymdHms"}}</span>

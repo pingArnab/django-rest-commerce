@@ -1,8 +1,8 @@
-<nav id="sidebar">
+<nav id="sidebar" class="bg-dark">
     <div id="sidebarCollapse" class="side-nav-toggle btn-dark">
         <i data-feather="chevron-left" class="chevron_icon"></i>
     </div>
-    <div class="sidebar-header">
+    <div class="sidebar-header bg-dark">
         <h3><a class="navbar-brand" href="{% url 'SELLER:dashboard' %}">{% get_project_name %}</a></h3>
         <hr>
     </div>
@@ -36,14 +36,14 @@
         <li>
             <a href="{% url 'SELLER:all-message' %}" class="nav-link d-flex align-items-center" style="gap: 0.4rem">
                 <i data-feather="mail"></i> Notification
-                {% if unread_message_count %}<span class="badge badge-primary" style="background: rgba(19,163,215,0.56)">{{ unread_message_count }}</span>{% endif %}
+                {% if unread_message_count %}<span class="badge badge-secondary">{{ unread_message_count }}</span>{% endif %}
             </a>
         </li>
 
     </ul>
     <ul class="list-unstyled CTAs user-container">
         <li class="user-info">Logged in as: {{ user.get_full_name }}</li>
-        <li> <a href="{% url 'HOME:logout' %}" class="logout-btn">Logout</a> </li>
+        <li> <a href="{% url 'HOME:logout' %}" class="btn btn-secondary">Logout</a> </li>
     </ul>
 </nav>
 
