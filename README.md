@@ -68,6 +68,15 @@ MAIL_PASSWORD="'{L%;XSd7sqq,M9g"
 <br>
 <br>
 
+### Upcoming Changes
+* Specification Template
+  1. A bunch of option to add different types filed, from a wide rage of industries.
+  2. User will be able to custom field according to their need.
+  3. Get the diagram here: [drawswl.app/drc-specification](https://drawsql.app/teams/poltergeist/diagrams/drc-specification/embed)
+
+<br>
+<br>
+
 <div align="center">
     Copyright (c) 2021 Poltergeist
 </div>
