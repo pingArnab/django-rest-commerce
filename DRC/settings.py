@@ -176,9 +176,7 @@ WSGI_APPLICATION = 'DRC.wsgi.application'
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 LOCAL = False
 
-DATABASES = {
-    'default': DBConfig
-}
+DATABASES = {}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
