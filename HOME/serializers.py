@@ -2,14 +2,14 @@ from rest_framework import serializers
 from .models import Carousel
 
 
-class CarouselSerializers(serializers.ModelSerializer):
+class BannersSerializer(serializers.ModelSerializer):
     target = serializers.SerializerMethodField()
     image = serializers.SerializerMethodField()
 
     class Meta:
         model = Carousel
         fields = (
-            'name', 'image', 'target'
+            'seq_no', 'name', 'image', 'target',
         )
 
     @staticmethod

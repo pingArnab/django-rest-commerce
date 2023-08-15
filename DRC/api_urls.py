@@ -52,7 +52,9 @@ urlpatterns = [
     path('seller/signup/', seller_api_views.seller_signup),
 
     # Hero
-    path('heros/', home_api_views.get_all_heroes),
+    path('heros/', home_api_views.get_all_banners),
+    # Sub Heading
+    path('sub-banners/', home_api_views.get_all_sub_banners),
 
     # Products
     path('products/', product_api_views.all_products),
