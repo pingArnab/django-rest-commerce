@@ -1,5 +1,9 @@
+import datetime
+
+import PRODUCT.models
 from .models import Seller
 from rest_framework import serializers
+from PRODUCT.models import Product
 
 
 class SellerSerializer(serializers.ModelSerializer):
@@ -32,3 +36,25 @@ class SellerSerializer(serializers.ModelSerializer):
     @staticmethod
     def get_is_verified(seller: Seller):
         return seller.verified
+
+
+class ProductSerializer(serializers.ModelSerializer):
+    selling_price = serializers.SerializerMethodField()
+    category = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Product
+        fields = (
+            'product_id', 'product_name', 'primary_image',
+            'in_stock', 'selling_price', 'sell_count', 'category'
+        )
+
+    def get_selling_price(self, product: Product):
+        datetime_now = datetime.datetime.now().astimezone()
+        if product.offer:
+            if product.offer_start < datetime_now < product.offer_end:
+                return product.offer_price
+        return product.price
+
+    def get_category(self, product: Product):
+        return product.category.values('category_id', 'category_name')

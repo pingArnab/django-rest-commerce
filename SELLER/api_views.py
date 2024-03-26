@@ -3,10 +3,10 @@ from rest_framework.decorators import api_view, permission_classes
 from django.contrib.auth.models import User as AuthUser
 from DRC.core.exceptions import ErrorResponse
 from SELLER.models import Seller
-from SELLER.serializers import SellerSerializer
+from SELLER.serializers import SellerSerializer, ProductSerializer
 from rest_framework.permissions import IsAuthenticated
 from DRC.core.permissions import SellerOnly, VerifiedSeller
-
+from PRODUCT.models import Product
 
 @api_view(['POST'])
 def seller_signup(request):
@@ -45,3 +45,16 @@ def seller_signup(request):
 def seller(request):
     if request.method == 'GET':
         return Response(SellerSerializer(request.user.seller, many=False).data)
+
+
+#  New APIs fo DRC Panel
+@api_view(['GET'])
+@permission_classes([IsAuthenticated, SellerOnly, VerifiedSeller])
+def all_products_for_seller(request):
+    product_qs = Product.objects.filter(seller__user=request.user)
+    return Response({
+        'data': ProductSerializer(product_qs, many=True).data,
+        'meta': {
+            'total': product_qs.count()
+        }
+    })

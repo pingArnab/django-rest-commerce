@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 from PRODUCT import api_views as product_api_views
 from HOME import api_views as home_api_views
 from SELLER import api_views as seller_api_views
@@ -65,5 +65,8 @@ urlpatterns = [
 
     path('search/', product_api_views.search),
     path('search-suggestion/', product_api_views.search_suggestion),
+
+    # New Apis for drcpanel
+    path('seller/', include('SELLER.api_urls'))
 
 ]

@@ -39,7 +39,7 @@ if ENV_TYPE.upper() == 'TEST':
     DEBUG_FLAG = False if (os.environ.get('DJANGO_DEBUG_MODE', '').upper() == 'FALSE') else True
     DBConfig = {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db_specification-template.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 else:
     DEBUG_FLAG = True if (os.environ.get('DJANGO_DEBUG_MODE', '').upper() == 'TRUE') else False
@@ -201,7 +201,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'Asia/Kolkata'
-USE_I18N: str = True
+USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
