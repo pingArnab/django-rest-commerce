@@ -143,6 +143,7 @@ SIMPLE_JWT = {
 
 ROOT_URLCONF = 'DRC.urls'
 
+# CAN_BE_REMOVED_ONCE_UI_IS_DEPRECATED
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
