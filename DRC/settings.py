@@ -9,10 +9,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 import os
-import socket
 from datetime import timedelta
 from pathlib import Path
-
 from django.core.management.commands import runserver
 
 from .config.loggerConfig import LOGGING as LOG_CONFIG
@@ -39,7 +37,7 @@ if ENV_TYPE.upper() == 'TEST':
     DEBUG_FLAG = False if (os.environ.get('DJANGO_DEBUG_MODE', '').upper() == 'FALSE') else True
     DBConfig = {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db_specification-template.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 else:
     DEBUG_FLAG = True if (os.environ.get('DJANGO_DEBUG_MODE', '').upper() == 'TRUE') else False
@@ -83,14 +81,12 @@ INSTALLED_APPS = [
     'USER.apps.UserConfig',
     'TRANSACTION.apps.TransactionConfig',
     'MESSAGE.apps.MessageConfig',
+    'ORGANIZATION.apps.OrganizationConfig',
 
     # Extra Apps
     'django_cleanup.apps.CleanupConfig',
     'django.contrib.humanize',
-    'dbbackup',  # django-dbbackup
 
-    # Log Viewer
-    "log_viewer",
 ]
 
 # DB Backup config
@@ -106,9 +102,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
-    # White Noise
-    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 CORS_ALLOWED_ORIGINS = CONFIG.CORS_ALLOWED_ORIGIN
@@ -163,10 +156,10 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
-            'builtins': [
-                'SELLER.templatetags.custom_tag',
-                'HOME.templatetags.base_tag',
-            ],
+            # 'builtins': [
+            #     'SELLER.templatetags.custom_tag',
+            #     'HOME.templatetags.base_tag',
+            # ],
         },
     },
 ]
@@ -201,7 +194,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'Asia/Kolkata'
-USE_I18N: str = True
+USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
@@ -212,7 +205,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = 'media/'
@@ -228,12 +221,6 @@ EMAIL_HOST_PASSWORD = os.environ.get('MAIL_PASSWORD')
 # for log
 LOGGING = LOG_CONFIG
 
-# Log Viewer
-LOG_VIEWER_FILES = ['DRC_dev']
-LOG_VIEWER_FILES_PATTERN = '*.log*'
-LOG_VIEWER_FILES_DIR = 'log/'
-LOG_VIEWER_PAGE_LENGTH = 25  # total log lines per-page
-LOG_VIEWER_MAX_READ_LINES = 1000  # total log lines will be read
-LOG_VIEWER_FILE_LIST_MAX_ITEMS_PER_PAGE = 25  # Max log files loaded in Datatable per page
-LOG_VIEWER_PATTERNS = ['[INFO]', '[DEBUG]', '[WARNING]', '[ERROR]', '[CRITICAL]', 'LOG: [']
-LOG_VIEWER_EXCLUDE_TEXT_PATTERN = None  # String regex expression to exclude the log from line
+# Default primary key field type
+# https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

@@ -1,7 +1,6 @@
 import logging
 from datetime import datetime
 from threading import *
-import blurhash
 from django.utils import timezone
 from django.db import models
 from SELLER.models import Seller
@@ -64,17 +63,20 @@ class Category(models.Model):
                                    blank=False, null=False, primary_key=True, editable=False)
     category_name = models.CharField(max_length=150, blank=False, null=False)
     primary_image = models.ImageField(upload_to=generate_file_path)
+    # TO_BE_REMOVED
     primary_image_placeholder = models.CharField(max_length=50, null=True, blank=True, editable=False)
     sell_count = models.IntegerField(default=0)
 
     parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True)
 
-    def get_primary_image_thumbnail(self):
-        return blurhash.encode(self.primary_image, x_components=4, y_components=3)
+    # TO_BE_REMOVED
+    # def get_primary_image_thumbnail(self):
+    #     return blurhash.encode(self.primary_image, x_components=4, y_components=3)
 
-    def save(self, *args, **kwargs):
-        self.primary_image_placeholder = self.get_primary_image_thumbnail()
-        super(Category, self).save(*args, **kwargs)
+    # TO_BE_REMOVED
+    # def save(self, *args, **kwargs):
+    #     self.primary_image_placeholder = self.get_primary_image_thumbnail()
+    #     super(Category, self).save(*args, **kwargs)
 
     def max_discount(self):
         max_dis = 0
@@ -110,6 +112,7 @@ class Product(models.Model):
 
     # images
     primary_image = models.ImageField(upload_to=generate_file_path)
+    # TO_BE_REMOVED
     primary_image_placeholder = models.CharField(max_length=50, null=True, blank=True)
     optional_image_1 = models.ImageField(upload_to=generate_file_path, null=True, blank=True)
     optional_image_2 = models.ImageField(upload_to=generate_file_path, null=True, blank=True)
@@ -146,12 +149,14 @@ class Product(models.Model):
     delivery_charge = models.FloatField(default=0.0)
     delivery_charge_per_product = models.BooleanField(default=False)
 
-    def get_primary_image_thumbnail(self):
-        return blurhash.encode(self.primary_image, x_components=4, y_components=3)
+    # TO_BE_REMOVED
+    # def get_primary_image_thumbnail(self):
+    #     return blurhash.encode(self.primary_image, x_components=4, y_components=3)
 
-    def update_primary_image_thumbnail(self):
-        self.primary_image_placeholder = blurhash.encode(self.primary_image, x_components=4, y_components=3)
-        self.save()
+    # TO_BE_REMOVED
+    # def update_primary_image_thumbnail(self):
+    #     self.primary_image_placeholder = blurhash.encode(self.primary_image, x_components=4, y_components=3)
+    #     self.save()
 
     def get_primary_image_url(self):
         return '/media/{}'.format(self.primary_image)

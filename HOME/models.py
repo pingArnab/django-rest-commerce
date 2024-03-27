@@ -1,8 +1,5 @@
 import datetime
 import uuid
-
-import blurhash
-
 from DRC.core.DRCCommonUtil import HASH
 from django.db import models
 from DRC.core.DRCCommonUtil import KEYGEN
@@ -26,12 +23,14 @@ class Carousel(models.Model):
     image = models.ImageField(upload_to=uploadPathCustomizer_Carousel)
     image_placeholder = models.CharField(max_length=50, null=True, blank=True, editable=False)
 
-    def get_image_thumbnail(self):
-        return blurhash.encode(self.image, x_components=4, y_components=3)
+    # TO_BE_REMOVED
+    # def get_image_thumbnail(self):
+    #     return blurhash.encode(self.image, x_components=4, y_components=3)
 
-    def save(self, *args, **kwargs):
-        self.image_placeholder = self.get_image_thumbnail()
-        super(Carousel, self).save(*args, **kwargs)
+    # TO_BE_REMOVED
+    # def save(self, *args, **kwargs):
+    #     self.image_placeholder = self.get_image_thumbnail()
+    #     super(Carousel, self).save(*args, **kwargs)
 
 
 class SubHeading(models.Model):
@@ -47,14 +46,17 @@ class SubHeading(models.Model):
     name = models.CharField(max_length=50)
     url = models.URLField()
     image = models.ImageField(upload_to=uploadPathCustomizer_SubHeading)
+    # TO_BE_REMOVED
     image_placeholder = models.CharField(max_length=50, null=True, blank=True, editable=False)
 
-    def get_image_thumbnail(self):
-        return blurhash.encode(self.image, x_components=4, y_components=3)
+    # TO_BE_REMOVED
+    # def get_image_thumbnail(self):
+    #     return blurhash.encode(self.image, x_components=4, y_components=3)
 
-    def save(self, *args, **kwargs):
-        self.image_placeholder = self.get_image_thumbnail()
-        super(SubHeading, self).save(*args, **kwargs)
+    # TO_BE_REMOVED
+    # def save(self, *args, **kwargs):
+    #     self.image_placeholder = self.get_image_thumbnail()
+    #     super(SubHeading, self).save(*args, **kwargs)
 
 
 class OTP(models.Model):
